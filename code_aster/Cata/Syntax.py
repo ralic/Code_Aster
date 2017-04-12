@@ -25,3 +25,5 @@ if not HAVE_ASTERSTUDY:
 
 else:
     from .Language.Syntax import *
+
+from code_aster.Utilities.i18n import tr

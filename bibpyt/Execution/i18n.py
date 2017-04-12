@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,7 +18,7 @@
 # person_in_charge: mathieu.courtois at edf.fr
 
 """
-Internationalization support for Code_Aster.
+Internationalization support for code_aster.
 """
 
 import os
@@ -70,7 +70,8 @@ class Language(Singleton):
         """Install the translation object for the given 'lang'."""
         if not self.domain:
             self.set_domain()
-        self.current_lang = (lang or self.default_lang).lower()
+        lang = (lang or self.default_lang).lower()
+        self.current_lang = lang
         if lang:
             lang = force_list(lang)
             low = lang[0].lower()

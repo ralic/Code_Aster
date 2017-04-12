@@ -57,13 +57,6 @@ from .Validators import (
 _F = dict
 __builtin__._F = _F
 
-# TODO: replace by the i18n function (see old accas.capy)
-def tr(args):
-    return args
-_ = tr
-
-__builtin__._ = _
-
 
 def OPER(**kwargs):
     return Operator(kwargs)

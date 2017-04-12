@@ -17,37 +17,29 @@
 # ======================================================================
 # person_in_charge: mathieu.courtois at edf.fr
 
-import os
-import os.path as osp
+"""
+i18n installation
+-----------------
 
-import Accas
-from Accas import *
-from Accas import _F
-from . import ops
+*Not yet done*
 
+TODO:
+- ``translate()`` for contextual translation,
+- ``tr()`` for translation in a default context,
+- merge or separate Qt and gettext translations?
+- replace `bibpyt/Execution/i18n` module.
+"""
 
-JdC = JDC_CATA(code='ASTER',
-               execmodul=None,
-               regles=(UN_PARMI('DEBUT', 'POURSUITE'),
-                       AU_MOINS_UN('FIN'),
-                       A_CLASSER(('DEBUT', 'POURSUITE'), 'FIN')))
+from Execution.strfunc import to_unicode
+from Execution.i18n import localization
 
+localization.install()
 
-class FIN_ETAPE(PROC_ETAPE):
-    """Particularisation pour FIN"""
-    def Build_sd(self):
-        """Fonction Build_sd pour FIN"""
-        PROC_ETAPE.Build_sd(self)
-        if self.nom == 'FIN':
-            try:
-                from Noyau.N_Exception import InterruptParsingError
-                raise InterruptParsingError
-            except ImportError:
-                # eficas does not known this exception
-                pass
-        return None
-
-
-class FIN_PROC(PROC):
-    """Procédure FIN"""
-    class_instance = FIN_ETAPE
+# use gettext function if it is already available
+def tr(args):
+    try:
+        _func = _
+    except NameError:
+        def _func(string):
+            return string
+    return _func(to_unicode(args))
