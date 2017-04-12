@@ -137,4 +137,8 @@ MODI_MAILLAGE=OPER(nom="MODI_MAILLAGE",op= 154,sd_prod=maillage_sdaster,
            NOEUD_ORIG      =SIMP(statut='f',typ=no,max=1),
          ),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
+         translation={
+            "MODI_MAILLAGE": "Modify a mesh",
+         }
+
 )  ;

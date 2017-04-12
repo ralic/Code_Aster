@@ -51,4 +51,12 @@ LIRE_MAILLAGE=OPER(nom="LIRE_MAILLAGE",op=   1,sd_prod=maillage_sdaster,
          ),
 
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),
+         translation={
+            "LIRE_MAILLAGE": "Read a mesh",
+            "FORMAT": "Mesh file format",
+            "UNITE": "Mesh file location",
+            "VERI_MAIL": "Mesh check",
+            "VERIF": "Check",
+            "APLAT": "Flat criterion",
+         }
 )  ;

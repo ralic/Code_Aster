@@ -3689,5 +3689,17 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 #
 
            INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
+           
+           translation={
+              "DEFI_MATERIAU": "Define a material",
+              "ALPHA" : "Thermal expansion coeficient",
+              "AMOR_ALPHA": "Stiffness damping",
+              "AMOR_BETA": "Mass damping" ,
+              "ELAS": "Linear isotropic elasticity",
+              "THER": "Isotropic heat conduction",
+              "AMOR_HYST": "Hysteretic damping",
+              "LAMBDA": "Thermal conductivity",
+              "RHO_CP": "Volumetric heat capacity",
+           },
            **C_MFRONT_OFFICIAL()
 )

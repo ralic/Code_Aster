@@ -912,4 +912,8 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
          ),
 
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
+         translation={
+            "AFFE_CHAR_MECA": "Assign mechanical load",
+            "EVOL_CHAR": "Pressure from a result", 
+         }
 )  ;

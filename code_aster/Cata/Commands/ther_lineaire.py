@@ -58,4 +58,7 @@ THER_LINEAIRE=OPER(nom="THER_LINEAIRE",op=25,sd_prod=evol_ther,reentrant='f',
 #-------------------------------------------------------------------
          TITRE           =SIMP(statut='f',typ='TXM'),
          INFO            =SIMP(statut='f',typ='I',into=(1,2)),
+         translation={
+            "THER_LINEAIRE": "Linear thermal analysis",
+         }
 )  ;

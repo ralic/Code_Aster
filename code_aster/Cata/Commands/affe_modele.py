@@ -280,4 +280,12 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
 
          VERI_JACOBIEN  =SIMP(statut='f',typ='TXM',into=('OUI','NON'),defaut='OUI',
                               fr =tr("Vérification de la forme des mailles (jacobiens tous de meme signe)."),),
+         translation={
+            "AFFE_MODELE": "Assign finite element",
+            "AFFE": "Finite element assignement",
+            "AFFE_SOUS_STRUC": "Substructures assignement",
+            "VERI_JACOBIEN": "Jacobian check",
+            "DISTRIBUTION": "MPI distribution" ,
+            "TOUT": "Everywhere",  
+         }
 ) ;

@@ -68,6 +68,8 @@ class OPER(N_ENTITE.ENTITE):
 
      - fr   : commentaire associé en francais
 
+     - translation : traduction métier des mots-clés (en anglais)
+
      - docu : clé de documentation associée
 
      - regles : liste des règles associées
@@ -90,7 +92,8 @@ class OPER(N_ENTITE.ENTITE):
     nommage = nommage
 
     def __init__(self, nom, op, sd_prod, reentrant='n', repetable='o', fr="",
-                 docu="", regles=(), op_init=None, niveau = None, **args):
+                 docu="", regles=(), op_init=None, niveau=None,
+                 translation=None, **args):
         """
            Méthode d'initialisation de l'objet OPER. Les arguments sont utilisés pour initialiser
            les attributs de meme nom

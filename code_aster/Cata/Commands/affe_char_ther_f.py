@@ -216,4 +216,7 @@ AFFE_CHAR_THER_F=OPER(nom="AFFE_CHAR_THER_F",op=34,sd_prod=char_ther,
          ),
 
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),
+         translation={
+            "AFFE_CHAR_THER_F": "Assign variable thermal load",
+         }
 )  ;

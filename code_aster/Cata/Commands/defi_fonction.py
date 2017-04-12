@@ -65,4 +65,16 @@ DEFI_FONCTION=OPER(nom="DEFI_FONCTION",op=3,sd_prod=defi_fonction_prod,
          VERIF           =SIMP(statut='f',typ='TXM',defaut="CROISSANT",into=("CROISSANT","NON") ),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
          TITRE           =SIMP(statut='f',typ='TXM'),
+         translation={
+            "DEFI_FONCTION": "Define function",
+            "VERIF": "Check order",
+            "VALE_PARA": "List of X-coordinate",
+            "VALE_FONC": "List of Y-coordinate",
+            "NOEUD_PARA": "Nodes as X-coordinate",
+            "VALE_Y": "Y-coordinates",
+            "INTERPOL": "Interpolations",
+            "VALE": "Coordinates",
+            "VALE_C": "Complex coordinates",
+        
+         }
 )  ;

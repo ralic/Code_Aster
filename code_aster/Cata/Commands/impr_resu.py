@@ -362,4 +362,9 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
          ), # end b_fmt_aster
 
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
+         translation={
+            "IMPR_RESU": "Set output results",
+            "UNITE": "Result file location",
+        
+         }
 ) ;

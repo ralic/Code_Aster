@@ -39,7 +39,7 @@ MECA_STATIQUE=OPER(nom="MECA_STATIQUE",op=46,sd_prod=evol_elas,
            FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
            TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE_CSTE",into=("FIXE_CSTE",) ),
          ),
-         INST            =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
+         INST            =SIMP(statut='f',typ='R'),
          LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
          INST_FIN        =SIMP(statut='f',typ='R'),
          OPTION          =SIMP(statut='f',typ='TXM',into=("SIEF_ELGA","SANS"),defaut="SIEF_ELGA",max=1,
@@ -51,4 +51,7 @@ MECA_STATIQUE=OPER(nom="MECA_STATIQUE",op=46,sd_prod=evol_elas,
          SOLVEUR         =C_SOLVEUR('MECA_STATIQUE'),
 #-------------------------------------------------------------------
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
+         translation={
+            "MECA_STATIQUE": "Static mechanical analysis",
+         }
 )  ;

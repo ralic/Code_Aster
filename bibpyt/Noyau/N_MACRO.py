@@ -68,6 +68,8 @@ class MACRO(N_ENTITE.ENTITE):
 
      - fr   : commentaire associé en francais
 
+     - translation : traduction métier des mots-clés (en anglais)
+
      - docu : clé de documentation associée
 
      - regles : liste des règles associées
@@ -91,7 +93,8 @@ class MACRO(N_ENTITE.ENTITE):
 
     def __init__(
         self, nom, op, sd_prod=None, reentrant='n', repetable='o', fr="",
-            docu="", regles=(), op_init=None, niveau = None, fichier_ini=0, **args):
+            docu="", regles=(), op_init=None, niveau=None, fichier_ini=0,
+            translation=None, **args):
         """
            Méthode d'initialisation de l'objet MACRO. Les arguments sont utilisés pour initialiser
            les attributs de meme nom
