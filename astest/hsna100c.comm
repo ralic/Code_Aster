@@ -1,0 +1,297 @@
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
+MAIL=LIRE_MAILLAGE(FORMAT='MED',
+                         UNITE=20,
+                         VERI_MAIL=_F(VERIF='OUI',
+                                      APLAT=1.E-3),
+                         INFO=2,
+                         );
+
+
+BETON=DEFI_MATERIAU(    SECH_GRANGER=_F(  A = 3.8E-13,
+                                          B = 0.05,
+                                          QSR_K = 4700.,
+                                          TEMP_0_C = 0.0,  ),
+                                   THER=_F(  LAMBDA = 2.22,
+                                          RHO_CP = 2.400E+6,      )
+                       )
+
+###################
+# CALCUL THERMIQUE
+###################
+
+
+CHMAT=AFFE_MATERIAU(    MAILLAGE=MAIL,
+                                AFFE=_F(  TOUT = 'OUI',
+                                       MATER = BETON,        )
+                         )
+
+MOTH=AFFE_MODELE(   MAILLAGE=MAIL,
+                             AFFE=_F( TOUT = 'OUI',
+                                   MODELISATION = '3D',
+                                   PHENOMENE = 'THERMIQUE',    )
+                        )
+T_INT = DEFI_FONCTION(NOM_PARA='INST',
+                      VALE=(0,15,
+                            1.57670E+08,15,#5ans-1j
+                            1.57680E+08,35,#5ans 
+                            1.70294E+09,35,
+                            ),);
+T_EXT=DEFI_CONSTANTE(VALE=15,);
+HEXT=DEFI_CONSTANTE(VALE=6,);
+HINT=DEFI_CONSTANTE(VALE=4,);
+CHARTH=AFFE_CHAR_THER_F(       MODELE=MOTH,
+                               ECHANGE=(
+                               _F(GROUP_MA='L_INT',
+                                   COEF_H=HINT,
+                                   TEMP_EXT=T_INT,),
+                                _F(GROUP_MA='L_EXT',
+                                   COEF_H=HEXT,
+                                   TEMP_EXT=T_EXT,),),
+                                   );
+LISTTHER=DEFI_LIST_REEL(
+             DEBUT=0.,INTERVALLE=(
+        _F( JUSQU_A = 3.15360E+05,       NOMBRE = 1,  ), #   0.1 AN
+        _F( JUSQU_A = 3.15360E+07,       NOMBRE = 1,  ), #   1   AN
+        _F( JUSQU_A = 1.57670E+08,       NOMBRE = 4,  ), #   5 -1  ANS
+        _F( JUSQU_A = 1.57680E+08,       NOMBRE = 2,  ), #   5 ANS
+        _F( JUSQU_A = 1.89216E+08,       NOMBRE = 1,  ), #   6   ANS
+        _F( JUSQU_A = 3.15360E+08,       NOMBRE = 4,  ), #  10   ANS
+        _F( JUSQU_A = 4.73040E+08,       NOMBRE = 4,  ), #  15   ANS
+        _F( JUSQU_A = 1.70294E+09,       NOMBRE = 1,  )) #  54   ANS
+                          )
+
+DEFLISTH =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LISTTHER),)
+
+RESUTHER=THER_LINEAIRE(          MODELE=MOTH,
+                                     EXCIT=_F( CHARGE = CHARTH,   ),
+                                CHAM_MATER=CHMAT,
+                                 ETAT_INIT=_F( VALE = 15.,   ),
+                                 INCREMENT=_F( LIST_INST = DEFLISTH,),);
+
+#####################
+# CALCUL DU SECHAGE
+#####################
+
+# FLUX D HUMIDITE SUR LES PAROIS EXTERNES
+
+BETA=3.41557E-06
+
+C_0=105.7
+C_50=57.5
+C_EQ_I05=69.1
+
+C_EQ_E05=69.1
+
+C_EQ_I10=51.6
+
+C_EQ_E10=69.1
+
+FL_INT05 = FORMULE(NOM_PARA='TEMP',
+                   VALE='''(0.5*BETA / ((C_0 - C_50 )**2)
+  * (TEMP - (2.*C_0 - C_EQ_I05 ))*(TEMP - C_EQ_I05 ))''')
+
+FL_EXT05 = FORMULE(NOM_PARA='TEMP',
+                   VALE='''(0.5*BETA / ((C_0 - C_50 )**2)
+  * (TEMP - (2.*C_0 - C_EQ_E05 ))*(TEMP - C_EQ_E05 ))''')
+
+FL_INT10 = FORMULE(NOM_PARA='TEMP',
+                   VALE='''(0.5*BETA / ((C_0 - C_50 )**2)
+  * (TEMP - (2.*C_0 - C_EQ_I10 ))*(TEMP - C_EQ_I10 ))''')
+
+FL_EXT10 = FORMULE(NOM_PARA='TEMP',
+                   VALE='''(0.5*BETA / ((C_0 - C_50 )**2)
+  * (TEMP - (2.*C_0 - C_EQ_E10 ))*(TEMP - C_EQ_E10 ))''')
+
+LIST0=DEFI_LIST_REEL(  DEBUT=0.,INTERVALLE=(
+                         _F(  JUSQU_A = 50.,    PAS = 10.,  ),
+                         _F(  JUSQU_A = 100.,   PAS = 2.,  ),
+                         _F(  JUSQU_A = 110.,   PAS = 2.,  ),
+                         _F(  JUSQU_A = 200.,   PAS = 10.,  )) )
+
+HU_INT05=CALC_FONC_INTERP(     FONCTION=FL_INT05,
+                                LIST_PARA=LIST0,
+                                  NOM_PARA = 'TEMP',
+                                 NOM_RESU='FL_INT05',
+                              PROL_GAUCHE='LINEAIRE',
+                               PROL_DROITE='LINEAIRE',
+#                                 INTERPOL='INT',
+                                 INTERPOL='LIN',
+                                    TITRE='FLUX D HUMIDITE'
+                            )
+
+HU_EXT05=CALC_FONC_INTERP(     FONCTION=FL_EXT05,
+                                LIST_PARA=LIST0,
+                                 NOM_PARA = 'TEMP',
+                                 NOM_RESU='FL_EXT05',
+                              PROL_GAUCHE='LINEAIRE',
+                               PROL_DROITE='LINEAIRE',
+#                                 INTERPOL='INT',
+                                INTERPOL='LIN',
+                                    TITRE='FLUX D HUMIDITE'
+                            )
+
+HU_INT10=CALC_FONC_INTERP(     FONCTION=FL_INT10,
+                                LIST_PARA=LIST0,
+                                NOM_PARA = 'TEMP',
+                                 NOM_RESU='FL_INT10',
+                              PROL_GAUCHE='LINEAIRE',
+                               PROL_DROITE='LINEAIRE',
+#                                 INTERPOL='INT',
+                                INTERPOL='LIN',
+                                    TITRE='FLUX D HUMIDITE'
+                            )
+
+HU_EXT10=CALC_FONC_INTERP(     FONCTION=FL_EXT10,
+                                LIST_PARA=LIST0,
+                                  NOM_PARA = 'TEMP',
+                                 NOM_RESU='FL_EXT10',
+                              PROL_GAUCHE='LINEAIRE',
+                               PROL_DROITE='LINEAIRE',
+#                                 INTERPOL='INT',
+                                 INTERPOL='LIN',
+                                    TITRE='FLUX D HUMIDITE'
+                            )
+
+CHARSE05=AFFE_CHAR_THER_F(     MODELE=MOTH,FLUX_NL=(
+                                _F(  GROUP_MA = 'L_INT',
+                                          FLUN = HU_INT05,       ),
+                                _F(  GROUP_MA = 'L_EXT',
+                                          FLUN = HU_EXT05,       ))
+                            )
+
+CHARSE10=AFFE_CHAR_THER_F(     MODELE=MOTH,FLUX_NL=(
+                                _F(  GROUP_MA = 'L_INT',
+                                          FLUN = HU_INT10,       ),
+                                _F(  GROUP_MA = 'L_EXT',
+                                          FLUN = HU_EXT10,       ))
+                            )
+
+
+LISTSECH=DEFI_LIST_REEL(
+             DEBUT=0.,INTERVALLE=(
+        _F( JUSQU_A = 3.15360E+04,       NOMBRE = 1,  ), #   0.001 A
+        _F( JUSQU_A = 3.15360E+06,       NOMBRE = 10,  ), #   0.1 AN
+        _F( JUSQU_A = 3.15360E+07,       NOMBRE = 9,  ), #   1   AN
+        _F( JUSQU_A = 1.50000E+08,       NOMBRE = 16, ), #   4.9 ANS
+        _F( JUSQU_A = 1.57680E+08,       NOMBRE = 16, ), #   5   ANS
+        _F( JUSQU_A = 1.57712E+08,       NOMBRE = 1,  ), #   5.001 A
+        _F( JUSQU_A = 1.60834E+08,       NOMBRE = 4,  ), #   5.1 ANS
+        _F( JUSQU_A = 1.89216E+08,       NOMBRE = 9,  ), #   6   ANS
+        _F( JUSQU_A = 3.15360E+08,       NOMBRE = 8,  ), #  10   ANS
+        _F( JUSQU_A = 4.73040E+08,       NOMBRE = 10,  ), #  15   ANS
+        _F( JUSQU_A = 1.57680E+09,       NOMBRE = 70,  ), #  50   ANS
+        _F( JUSQU_A = 1.70294E+09,       NOMBRE = 8,  )) #  54   ANS
+                          )
+
+DEFLISTS =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LISTSECH),)
+
+RESUSECH=THER_NON_LINE(          MODELE=MOTH,
+                                 METHODE='NEWTON_KRYLOV', 
+                                 SOLVEUR=_F(METHODE='PETSC'), 
+                                     EXCIT=_F( CHARGE = CHARSE05,   ),
+                                CHAM_MATER=CHMAT,
+                                 ETAT_INIT=_F( VALE = 105.7,   ),
+                                 INCREMENT=_F( LIST_INST = DEFLISTS,
+                                               INST_FIN = 1.57680E+08,       ),
+                              COMPORTEMENT=_F( RELATION = 'SECH_GRANGER',
+                                            TOUT = 'OUI',            ),
+                            CONVERGENCE=_F(ITER_GLOB_MAXI=20),
+                            EVOL_THER_SECH=RESUTHER,
+                             TITRE=( ' CAS TEST &CODE &RL COMMANDE &COMMANDE', )
+                         )
+
+RESUSECH=THER_NON_LINE(reuse=RESUSECH,         
+                        MODELE=MOTH,
+                        METHODE='NEWTON_KRYLOV',
+                        SOLVEUR=_F(METHODE='PETSC'),
+                                     EXCIT=_F( CHARGE = CHARSE10,   ),
+                                CHAM_MATER=CHMAT,
+                                 ETAT_INIT=_F( EVOL_THER = RESUSECH,
+                                            INST = 1.57680E+08,   ),
+                                 INCREMENT=_F( LIST_INST = DEFLISTS,
+                                            INST_INIT = 1.57680E+08,),
+                              COMPORTEMENT=_F( RELATION = 'SECH_GRANGER',
+                                            TOUT = 'OUI',            ),
+                            CONVERGENCE=_F(ITER_GLOB_MAXI=20),
+                            EVOL_THER_SECH=RESUTHER,
+                             TITRE=( ' CAS TEST &CODE &RL COMMANDE &COMMANDE', )
+                         )
+
+
+##############################
+# TESTS DES RESULTATS
+##############################
+
+LISTSEC2=DEFI_LIST_REEL(
+             DEBUT=0.,INTERVALLE=(
+        _F( JUSQU_A = 1.57680E+08,       NOMBRE = 1, ), #   5   ANS
+        _F( JUSQU_A = 4.73040E+08,       NOMBRE = 1,  ), #  15   ANS
+        _F( JUSQU_A = 1.70294E+09,       NOMBRE = 1,  )) #  54   ANS
+                          )
+COUP=MACR_LIGN_COUPE(RESULTAT=RESUSECH,
+                         LIST_INST=LISTSEC2,
+                         NOM_CHAM='TEMP',
+                         LIGN_COUPE=_F(NOM_CMP=('TEMP'),
+                                       TYPE='GROUP_MA',
+                                       MAILLAGE=MAIL,
+                                       GROUP_MA='RGENEF',),);
+
+IMPR_TABLE(TABLE=COUP,FORMAT='TABLEAU_CROISE', FORMAT_R='F3.12',NOM_PARA=('INST','COOR_X','TEMP'),);
+#-----------------------------------------------------
+# Tests 
+#-----------------------------------------------------
+C_ref = [[67.6838,54.2257,51.6],
+         [80.9129,65.2,56.8903],
+         [89.6936,75.4576,62.4],
+         [97.8,84.9649,69.1059],
+         [102.207,91.4,74.4781],
+         [104,95.2,78.3688],
+         [102,93.55,77.8487],
+         [97.8,89.3776,75.9533],
+         [90.1783,82.8,73.1186],
+         [81,76.3516,70.815],
+         [71.2,70.0603,68.8035],];
+# valeurs de non-regression DNSXI,DNSXS,DNSYI,DNSYS    
+C_reg=[ [69.395169106175, 51.783610677714, 51.655510194322],
+[81.146071925132, 64.545492771684, 56.460745431477],
+[90.607776328377, 74.955498571336, 61.973805298843],
+[97.953297776620, 83.710215919560, 67.831698802251],
+[102.989014354168, 90.725857596297, 73.399961041760],
+[105.018251107487, 94.883401056401, 77.447023194212],
+[102.952664533323, 93.729092571252, 77.708008140906],
+[97.888123667820, 89.217761663537, 75.727558926024],
+[90.528065575940, 83.127485807812, 73.237988304304],
+[81.097421435702, 76.296817377533, 70.962467053312],
+[69.361278835568, 69.278022046396, 69.1496019473 ],];
+
+x_test = [22.5,22.5382,22.5954,22.6809,22.8088,23,23.1912,23.3191,23.4046,23.4618,23.5];
+inst_test = [1.57680E+08,4.73040E+08,1.70294E+09,];         
+for j,t in enumerate(inst_test) :
+    for i,x in enumerate(x_test) :
+        TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=0.05,
+                   VALE_CALC= C_reg[i][j],
+                   VALE_REFE=C_ref[i][j],
+                   NOM_PARA='TEMP',
+                   TABLE=COUP,
+                   FILTRE=(_F(NOM_PARA='COOR_X',VALE=x,),
+                           _F(NOM_PARA='INST',VALE=t,),),);
+#
+FIN () ;
