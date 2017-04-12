@@ -1,5 +1,5 @@
 subroutine nxresi(ther_crit_i, ther_crit_r, vec2nd   , cnvabt   , cnresi   ,&
-                  cn2mbr     , resi_rela  , resi_maxi, conver)
+                  cn2mbr     , resi_rela  , resi_maxi, vnorm, conver )
 !
 implicit none
 !
@@ -8,7 +8,7 @@ implicit none
 #include "asterfort/jeveuo.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,6 +33,7 @@ implicit none
     character(len=24), intent(in) :: cn2mbr
     real(kind=8), intent(out) :: resi_rela
     real(kind=8), intent(out) :: resi_maxi
+    real(kind=8), intent(out) :: vnorm
     aster_logical, intent(out) :: conver
 !
 ! --------------------------------------------------------------------------------------------------
@@ -50,7 +51,6 @@ implicit none
     real(kind=8), pointer :: v_vec2nd(:) => null()
     real(kind=8), pointer :: v_cnvabt(:) => null()
     real(kind=8), pointer :: v_cnresi(:) => null()
-    real(kind=8) :: vnorm
     integer :: nb_equa, i_equa
 !
 ! --------------------------------------------------------------------------------------------------
@@ -98,5 +98,5 @@ implicit none
             conver = .false.
         endif
     endif
-
+!
 end subroutine

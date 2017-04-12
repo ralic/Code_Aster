@@ -4,7 +4,7 @@ subroutine nxnewt(model    , mate       , cara_elem  , list_load, nume_dof ,&
                   vtempp   , vec2nd     , mediri     , conver   , hydr_prev,&
                   hydr_curr, dry_prev   , dry_curr   , compor   , cnvabt   ,&
                   cnresi   , ther_crit_i, ther_crit_r, reasma   , testr    ,&
-                  testm    , ds_algorom)
+                  testm    , vnorm      , ds_algorom )
 !
 use ROM_Datastructure_type
 !
@@ -30,7 +30,7 @@ implicit none
 #include "asterfort/vethbt.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -63,7 +63,7 @@ implicit none
     character(len=24) :: hydr_prev, hydr_curr, compor, dry_prev, dry_curr
     integer :: ther_crit_i(*)
     real(kind=8) :: ther_crit_r(*)
-    real(kind=8) :: testr, testm
+    real(kind=8) :: testr, testm, vnorm
     type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
 !
 ! --------------------------------------------------------------------------------------------------
@@ -134,9 +134,9 @@ implicit none
                                    cn2mbr     , testr      , testm , conver, ds_algorom)
     else
         call nxresi(ther_crit_i, ther_crit_r, vec2nd, cnvabt, cnresi,&
-                    cn2mbr     , testr      , testm , conver)
+                    cn2mbr     , testr      , testm , vnorm, conver)
     endif
- 
+!
     if (conver) then
         call copisd('CHAMP_GD', 'V', temp_iter, vtempp)
         goto 999

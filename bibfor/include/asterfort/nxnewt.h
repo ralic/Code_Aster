@@ -26,7 +26,7 @@ interface
                       vtempp   , vec2nd     , mediri     , conver   , hydr_prev,&
                       hydr_curr, dry_prev   , dry_curr   , compor   , cnvabt   ,&
                       cnresi   , ther_crit_i, ther_crit_r, reasma   , testr    ,&
-                      testm    , ds_algorom)
+                      testm    , vnorm, ds_algorom)
         use ROM_Datastructure_type
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: mate
@@ -59,6 +59,7 @@ interface
         aster_logical :: reasma
         real(kind=8) :: testr
         real(kind=8) :: testm
+        real(kind=8) :: vnorm
         type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
     end subroutine nxnewt
 end interface

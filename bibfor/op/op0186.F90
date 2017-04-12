@@ -25,6 +25,8 @@ implicit none
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/medith.h"
+#include "asterfort/nmnkft.h"
+#include "asterfort/nmlere.h"
 #include "asterfort/ntdata.h"
 #include "asterfort/ntarch.h"
 #include "asterfort/ntobsv.h"
@@ -46,7 +48,7 @@ implicit none
 #include "asterfort/vtzero.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -72,7 +74,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_stat, matcst, coecst, reasma, arret, conver, itemax
-    aster_logical :: l_dry, l_line_search, finpas, l_evol
+    aster_logical :: l_dry, l_line_search, finpas, l_evol, lnkry
     aster_logical :: force, l_rom
     integer :: ther_crit_i(3), numins, k, icoret, nbcham, iterho
     integer :: itmax, ifm, niv, neq, iterat, jtempp, jtemp
@@ -81,6 +83,7 @@ implicit none
     real(kind=8) :: tps2(4), tps3(4), tpex, ther_crit_r(2), theta, khi, rho, testr
     real(kind=8) :: testm, para(2), instap, tconso
     real(kind=8) :: rtab(2), theta_read
+    real(kind=8) :: vrela(1), vmaxi(1), vnorm(1)
     character(len=1) :: base
     character(len=3) :: kreas
     character(len=8) :: result, result_dry, mesh
@@ -129,7 +132,7 @@ implicit none
     solver    = '&&OP0186.SOLVER'
     list_load = '&&OP0186.LISCHA'
     varc_curr = '&&OP0186.CHVARC'
-! --- CE BOOLEEN ARRET EST DESTINE AUX DEVELOPPEUR QUI VOUDRAIENT
+! --- CE BOOLEEN ARRET EST DESTINE AUX DEVELOPPEURS QUI VOUDRAIENT
 ! --- FORCER LE CALCUL MEME SI ON N'A PAS CONVERGENCE (ARRET=TRUE)
     arret = .false.
 !
@@ -163,6 +166,9 @@ implicit none
         numins=1
     endif
     deltat=-1.d150
+! --- La fonctionnalité Newton-Krylov est-elle active ? 
+    lnkry = ds_algopara%method == 'NEWTON_KRYLOV' 
+
 !
 ! --- CREATION DES OBJETS DE TRAVAIL ET DES STRUCTURES DE DONNEES
     vtemp ='&&NXLECTVAR_____'
@@ -227,6 +233,13 @@ implicit none
         khi=1.d0
     endif
     para(2) = deltat
+!
+! --- NEWTON-KRYLOV : COPIE DANS LA SD SOLVEUR DE LA PRECISION DE LA
+!                     RESOLUTION POUR LA PREDICTION (FORCING-TERM)
+    if (lnkry) then
+        iterat=-1
+        call nmnkft(solver, sddisc, iterat)
+    endif
 !
 ! --- MATRICE TANGENTE REACTUALISEE POUR UN NOUVEAU DT
 !
@@ -344,8 +357,14 @@ implicit none
                 maprec, cncine     , varc_curr  , vtemp    , vtempm  ,&
                 vtempp, cn2mbr_stat, mediri     , conver   , vhydr   ,&
                 vhydrp, dry_prev   , dry_curr   , compor   , vabtla  ,&
-                cnresi, ther_crit_i, ther_crit_r, reasma   , testr   ,&
-                testm , ds_algorom)
+                cnresi, ther_crit_i, ther_crit_r, reasma   , testr,&
+                testm , vnorm(1), ds_algorom )
+!
+    vrela(1) = testr 
+    vmaxi(1) = testm
+    call nmlere(sddisc, 'E', 'VRELA', iterat, vrela)
+    call nmlere(sddisc, 'E', 'VMAXI', iterat, vmaxi)
+    call nmlere(sddisc, 'E', 'VCHAR', iterat, vnorm)
 !
 ! --- SI NON CONVERGENCE ALORS RECHERCHE LINEAIRE
 !       (CALCUL DE RHO) SUR L INCREMENT VTEMPP
@@ -380,6 +399,13 @@ implicit none
         write (ifm,fmt1)
         call utmess('I', 'MECANONLINE10_3')
     endif
+!
+! --------- CALCUL CRITERE DE CONVERGENCE POUR NEWTON-KRYLOV (FORCING-TERM)
+!
+    if (lnkry) then
+       call nmnkft(solver, sddisc, iterat)
+    endif
+!
     call uttcpu('CPU.OP0186.2', 'FIN', ' ')
     call uttcpr('CPU.OP0186.2', 4, tps2)
     if ((.not.conver) .and. (.not.itemax)) then

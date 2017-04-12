@@ -16,6 +16,7 @@ implicit none
 #include "asterfort/ntcrcv.h"
 #include "asterfort/ntetcr.h"
 #include "asterfort/ntdoet.h"
+#include "asterfort/nxcerr.h"
 #include "asterfort/nxnoli.h"
 #include "asterfort/ntnume.h"
 #include "asterfort/tiinit.h"
@@ -23,7 +24,7 @@ implicit none
 #include "asterfort/romAlgoNLInit.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -134,6 +135,10 @@ implicit none
 ! - Time discretization and storing datastructures
 !
     call tiinit(ds_inout, sddisc, l_stat, l_evol)
+!
+! - Add storage of convergence information in time discretization datastructure
+!
+    call nxcerr(sddisc)
 !
 ! - Create observation datastructure
 !

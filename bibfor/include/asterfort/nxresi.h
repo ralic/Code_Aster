@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,7 +19,7 @@
 !
 interface
     subroutine nxresi(ther_crit_i, ther_crit_r, vec2nd   , cnvabt   , cnresi,&
-                      cn2mbr     , resi_rela  , resi_maxi, conver)
+                      cn2mbr     , resi_rela  , resi_maxi, vnorm, conver)
         integer, intent(in) :: ther_crit_i(*)
         real(kind=8), intent(in) :: ther_crit_r(*)
         character(len=24), intent(in) :: vec2nd
@@ -28,6 +28,7 @@ interface
         character(len=24), intent(in) :: cn2mbr
         real(kind=8), intent(out) :: resi_rela
         real(kind=8), intent(out) :: resi_maxi
+        real(kind=8), intent(out) :: vnorm
         aster_logical, intent(out) :: conver
     end subroutine nxresi
 end interface
