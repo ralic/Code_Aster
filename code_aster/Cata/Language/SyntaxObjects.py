@@ -288,7 +288,7 @@ class PartOfSyntax(UIDMixing):
 
     def hasDefaultValue(self):
         """Tell if the keyword has a default value"""
-        raise NotImplementedError("must be defined in a subclass")
+        return False
 
     def addDefaultKeywords(self, userSyntax, _parent_ctxt=None):
         """Add default keywords into the user dict of keywords.
