@@ -510,8 +510,9 @@ class Bloc(PartOfSyntax):
 
     def isEnabled(self, context):
         """Tell if the block is enabled by the given context"""
+        from . import DataStructure as DS
         eval_context = {}
-        eval_context.update(DataStructure.__dict__)
+        eval_context.update(DS.__dict__)
         eval_context.update(block_utils(eval_context))
         # evaluate Python variables if present
         for key, value in context.items():
