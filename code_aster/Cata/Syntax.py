@@ -36,4 +36,27 @@ if not HAVE_ASTERSTUDY:
 else:
     from .Language.Syntax import *
 
-from code_aster.Utilities.i18n import tr
+
+class Translation(object):
+    """Class to dynamically assign a translation function.
+
+    The package Cata must stay independent. So the translation function will
+    be defined by code_aster or by AsterStudy.
+    """
+
+    def __init__(self):
+        self._func = lambda arg: arg
+
+    def set_translator(self, translator):
+        """Define the translator function.
+
+        Args:
+            translator (function): Function returning the translated string.
+        """
+        self._func = translator
+
+    def __call__(self, arg):
+        """Return the translated string"""
+        return self._func(arg)
+
+tr = Translation()
