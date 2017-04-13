@@ -82,6 +82,7 @@ from .DS.co_reel import reel
 
 
 from .Syntax import GEOM, formule, formule_c
+from code_aster.Cata.Syntax import tr
 
 # Types géométriques
 class no(GEOM):
