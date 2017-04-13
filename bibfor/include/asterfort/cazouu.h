@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,8 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cazouu(keywf, nb_cont_zone, keyw_)
+    subroutine cazouu(keywf, nb_cont_zone, keyw_,keyw_type_)
         character(len=16), intent(in) :: keywf
+        character(len=*), intent(in) :: keyw_type_
         integer, intent(in) :: nb_cont_zone
         character(len=*), intent(in) :: keyw_
     end subroutine cazouu

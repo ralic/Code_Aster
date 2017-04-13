@@ -38,6 +38,7 @@ Le frottement n'est autorisé qu'avec une formulation pénalisée sur la partie 
 """),
 
     4 : _(u"""
+    Erreur d'utilisation de la méthode LAC. 
   Le mot-clef < %(k1)s > doit avoir la même valeur sur toutes les zones
   de contact
 """),

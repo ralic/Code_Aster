@@ -12,7 +12,7 @@ implicit none
 #include "asterfort/jeveuo.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -107,11 +107,11 @@ implicit none
 ! - Bilateral contact: on all zones
 !
     if (l_cont_acti) then
-        call cazouu(keywf, nb_cont_zone, 'GLISSIERE')
+        call cazouu(keywf, nb_cont_zone, 'GLISSIERE','T')
         call getvtx(keywf, 'GLISSIERE', iocc=1, scal=s_glis)
         if (s_glis .eq. 'OUI') then
             v_sdcont_caradf(zcmdf*(i_zone-1)+6) = 1.d0
-            call cazouu(keywf, nb_cont_zone, 'ALARME_JEU')
+            call cazouu(keywf, nb_cont_zone, 'ALARME_JEU','R8')
             call getvr8(keywf, 'ALARME_JEU', iocc=1, scal=glis_alarm)
             v_sdcont_caradf(zcmdf*(i_zone-1)+5) = glis_alarm
         endif

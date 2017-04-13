@@ -1,4 +1,4 @@
-subroutine cazouu(keywf, nb_cont_zone, keyw_)
+subroutine cazouu(keywf, nb_cont_zone, keyw_,keyw_type_)
 !
 implicit none
 !
@@ -12,7 +12,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,6 +32,7 @@ implicit none
     character(len=16), intent(in) :: keywf
     integer, intent(in) :: nb_cont_zone
     character(len=*), intent(in) :: keyw_
+    character(len=*), intent(in) :: keyw_type_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,84 +48,68 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_keyw
-    parameter   (nb_keyw=99)
-    character(len=3) :: keyw_type(nb_keyw)
-    character(len=16) :: keyw_name(nb_keyw)
+    
 !
-    character(len=1) :: s_keyw_cata_type
-    character(len=8) :: keyw_cata_type
     character(len=16) :: keyw
     aster_logical :: l_error
-    integer :: i_zone, noc, nb_keyw_cata, i_keyw_cata, n
+    integer :: i_zone, noc
     real(kind=8) :: vale_r
     integer :: vale_i
     character(len=16) :: vale_k
     real(kind=8) :: vale_refe_r
     integer :: vale_refe_i
     character(len=16) :: vale_refe_k
+    character(len=1) :: keyw_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
     l_error = .false.
     i_zone  = 1
     keyw    = keyw_
-!
-! - Get list of keywords in catalog
-!
-    call getmjm(keywf       , i_zone, 1, keyw_name, keyw_type,&
-                nb_keyw_cata)
-    nb_keyw_cata = abs(nb_keyw_cata)
-    ASSERT(nb_keyw_cata.lt.nb_keyw)
-!
-    if (nb_keyw_cata .ne. 0) then
+    keyw_type=keyw_type_
+
 !
 ! ----- Loop on contact zones
 !
+
         do i_zone = 1, nb_cont_zone
-            call getmjm(keywf, i_zone, nb_keyw_cata, keyw_name, keyw_type,&
-                        n)
-!
-! --------- Loop on keywords in catalog
-!
-            do i_keyw_cata = 1, nb_keyw_cata
-                if (keyw_name(i_keyw_cata) .eq. keyw) then
 !
 ! ----------------- Read value (depends on type)
 !
-                    keyw_cata_type = keyw_type(i_keyw_cata)
+
                     vale_i         = 0
                     vale_r         = 0.d0
                     vale_k         = ' '
-                    if (keyw_cata_type(1:1) .eq. 'I') then
-                        s_keyw_cata_type = 'I'
+                    write (6,*)  keyw_type
+                    if (keyw_type .eq. 'I') then
                         call getvis(keywf, keyw, iocc=i_zone, scal=vale_i, nbret=noc)
-                    else if (keyw_cata_type(1:2).eq.'TX') then
-                        s_keyw_cata_type = 'T'
+                    else if (keyw_type .eq.'T') then
                         call getvtx(keywf, keyw, iocc=i_zone, scal=vale_k, nbret=noc)
-                    else if (keyw_cata_type(1:2).eq.'R8') then
-                        s_keyw_cata_type = 'R'
+                    else if (keyw_type .eq.'R') then
                         call getvr8(keywf, keyw, iocc=i_zone, scal=vale_r, nbret=noc)
                     else
                         ASSERT(.false.)
                     endif
+                    
                     if (noc .ne. 0) then
+                     
+                    
                         if (i_zone .eq. 1) then
                             vale_refe_i = vale_i
                             vale_refe_r = vale_r
                             vale_refe_k = vale_k
                         else
-                            if (s_keyw_cata_type .eq. 'I') then
+                            if (keyw_type .eq. 'I') then
                                 if (vale_i .ne. vale_refe_i) then
                                     l_error = .true.
                                     goto 99
                                 endif
-                            else if (s_keyw_cata_type.eq.'R') then
+                            else if (keyw_type.eq.'R') then
                                 if (abs(vale_r - vale_refe_r).le.r8prem()) then
                                     l_error = .true.
                                     goto 99
                                 endif
-                            else if (s_keyw_cata_type.eq.'T') then
+                            else if (keyw_type.eq.'T') then
                                 if (vale_k .ne. vale_refe_k) then
                                     l_error = .true.
                                     goto 99
@@ -134,10 +119,7 @@ implicit none
                             endif
                         endif
                     endif
-                endif
-            end do
         end do
-    endif
 !
  99 continue
 !

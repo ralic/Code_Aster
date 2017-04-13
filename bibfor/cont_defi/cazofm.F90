@@ -16,7 +16,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -105,7 +105,7 @@ implicit none
 !
     call getvtx(keywf, 'ALGO_CONT', iocc=1, scal=s_algo_cont)
     if (cont_form .eq. 1) then
-        call cazouu(keywf, cont_nbzone, 'ALGO_CONT')
+        call cazouu(keywf, cont_nbzone, 'ALGO_CONT','T')
         if (l_frot) then
             algo_frot = 1
             if (s_algo_cont .eq. 'PENALISATION') then
