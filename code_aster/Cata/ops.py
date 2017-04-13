@@ -21,7 +21,7 @@
 ops package
 -----------
 
-Currently only used by the legacy supervisor.
+Only used by the legacy supervisor.
 
 """
 

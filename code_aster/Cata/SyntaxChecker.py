@@ -23,5 +23,11 @@ Module SyntaxChecker
 
 This module defines objects to check the validity of code_aster syntax.
 
-*Not yet used at the top level.*
+Only used by the next generation of the commands language
+(already used by AsterStudy).
 """
+
+from . import HAVE_ASTERSTUDY
+
+if HAVE_ASTERSTUDY:
+    from .Language.SyntaxChecker import *

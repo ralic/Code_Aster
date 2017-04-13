@@ -17,6 +17,17 @@
 # ======================================================================
 # person_in_charge: mathieu.courtois at edf.fr
 
+"""
+Module SyntaxObjects
+--------------------
+
+This module defines the objects on which the commands language is based.
+Only the 'Command' object is imported at this top level.
+
+It works as a switch between the legacy supervisor and the next generation
+of the commands language (already used by AsterStudy).
+"""
+
 from . import HAVE_ASTERSTUDY
 
 if not HAVE_ASTERSTUDY:

@@ -23,5 +23,11 @@ Module SyntaxUtils
 
 This module defines utilities for the code_aster language.
 
-*Not yet used at the top level.*
+Only used by the next generation of the commands language
+(already used by AsterStudy).
 """
+
+from . import HAVE_ASTERSTUDY
+
+if HAVE_ASTERSTUDY:
+    from .Language.SyntaxUtils import *
