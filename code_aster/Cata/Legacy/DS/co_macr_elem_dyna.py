@@ -66,11 +66,11 @@ class macr_elem_dyna(ASSD):
         else:
             raise AsException("Le type de la matrice est incorrect")
 
-        desc = macr_elem.sdj.DESC.get()
+        desc = macr_elem.DESC.get()
         # On teste si le DESC de la matrice existe
         if not desc:
             raise AsException("L'objet matrice {0!r} n'existe pas"
-                          .format(macr_elem.sdj.DESC.nomj()))
+                          .format(macr_elem.DESC.nomj()))
         desc = numpy.array(desc)
 
         matrice = VALM_triang2array(macr_elem.VALE.get(), desc[1])
@@ -98,11 +98,11 @@ class macr_elem_dyna(ASSD):
             raise AsException("Le type de la matrice est incorrect")
         nom_vale = macr_elem.VALE.nomj()
 
-        desc = macr_elem.sdj.DESC.get()
+        desc = macr_elem.DESC.get()
         # On teste si le DESC de la matrice existe
         if not desc:
             raise AsException("L'objet matrice {0!r} n'existe pas"
-                          .format(macr_elem.sdj.DESC.nomj()))
+                          .format(macr_elem.DESC.nomj()))
         desc = numpy.array(desc)
         numpy.asarray(matrice)
 
