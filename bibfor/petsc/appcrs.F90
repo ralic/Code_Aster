@@ -135,7 +135,7 @@ use petsc_data_module
     else if (precon.eq.'LDLT_SP') then
 !        CREATION SOLVEUR BIDON SIMPLE PRECISION
         spsomu = zk24(jslvk-1+3)(1:19)
-        call crsmsp(spsomu, nomat, 0)
+        call crsmsp(spsomu, nomat, 0, 'IN_CORE')
 !        CREATION DES VECTEURS TEMPORAIRES UTILISES DANS LDLT_SP
         if (lmd) then
             call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
