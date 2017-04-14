@@ -568,6 +568,7 @@ class CALCULS_ASTER:
 
         try:
             import aster
+            from code_aster.Cata.context import *
             from code_aster.Cata.Syntax import OPER, MACRO
             from code_aster.Cata.Syntax import _F
 
