@@ -132,10 +132,8 @@ implicit none
 !
         ASSERT(i_zone .le. 100)
         call codent(i_zone-1, 'G', knuzo)
-        write(*,*) "hello apstos", knuzo(1:2)
         sdappa_mast = sdappa(1:19)//'.MS'//knuzo(1:2)
         sdappa_slav = sdappa(1:19)//'.EC'//knuzo(1:2)
-        write(*,*) "bye", knuzo(1:2)
 !
 ! ----- Get objects
 !

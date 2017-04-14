@@ -29,7 +29,7 @@ implicit none
 !
     character(len=19), intent(in) :: sdappa
     character(len=24), intent(in) :: sdcont_defi
-    integer, intent(in) :: i_zone  
+    integer, intent(in) :: i_zone
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,7 +49,7 @@ implicit none
     integer :: jcmmal, jcmesl
     integer :: i_elem, i_surf_mast, i_surf_slav
     integer :: nb_elem_mast, nb_elem_slav
-    character(len=24) :: sdappa_mast, sdappa_slav 
+    character(len=24) :: sdappa_mast, sdappa_slav
     character(len=24) :: sdcont_mailco
     integer, pointer  :: v_sdcont_mailco(:) => null()
     integer, pointer  :: v_list_mast(:) => null()
@@ -62,10 +62,8 @@ implicit none
 !
     ASSERT(i_zone .le. 100)
     call codent(i_zone-1, 'G', knuzo)
-    write(*,*) "hello gtlima", knuzo(1:2)
     sdappa_mast = sdappa(1:19)//'.MS'//knuzo(1:2)
     sdappa_slav = sdappa(1:19)//'.EC'//knuzo(1:2)
-    write(*,*) "bye" 
 !
 ! - Access to contact datastructures
 !
@@ -89,7 +87,7 @@ implicit none
     do i_elem = 1, nb_elem_mast
         v_list_mast(i_elem) = v_sdcont_mailco(jcmmal+i_elem)
     end do
-    do i_elem = 1, nb_elem_slav    
+    do i_elem = 1, nb_elem_slav
         v_list_slav(i_elem) = v_sdcont_mailco(jcmesl+i_elem)
     end do
 !
