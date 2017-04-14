@@ -29,6 +29,23 @@ DEFI_BASE_REDUITE=OPER(
     reentrant='f',
     reuse=SIMP(statut='c', typ=CO),
 
+    OPERATION = SIMP(statut='f',typ='TXM',defaut="POD",into=("POD","POD_INCR",'GLOUTON',)),
+
+    b_pod  = BLOC(condition ="""(equal_to("OPERATION", 'POD'))""",
+        RESULTAT        =SIMP(statut='o',typ=resultat_sdaster),
+        b_thermique     =BLOC(condition = """is_type("RESULTAT") == evol_ther""",
+                               NOM_CHAM  = SIMP(statut='o',typ='TXM',max=1,into=('TEMP','FLUX_NOEU')),
+                          ),
+        b_mecanique     =BLOC(condition = """is_type("RESULTAT") == evol_noli""",
+                               NOM_CHAM  = SIMP(statut='o',typ='TXM',max=1,into=('DEPL','SIEF_NOEU')),
+                          ),
+        TYPE_BASE       =SIMP(statut='f',typ='TXM',defaut="3D",into=("3D","LINEIQUE")),
+        b_lineique      =BLOC(condition ="""(equal_to("TYPE_BASE", 'LINEIQUE'))""",
+                               AXE       = SIMP(statut='o',typ='TXM',max=1,into=('OX','OY','OZ')),
+                               SECTION   = SIMP(statut='o',typ=grno ,max=1)),
+        TOLE_SVD        =SIMP(statut='f',typ='R',defaut=1.E-6),
+    ),
+
     b_incr = BLOC(condition ="""(equal_to("OPERATION", 'POD_INCR'))""",
         RESULTAT        =SIMP(statut='o',typ=resultat_sdaster),
         b_thermique     =BLOC(condition = """is_type("RESULTAT") == evol_ther""",
