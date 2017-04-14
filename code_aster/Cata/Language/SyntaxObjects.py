@@ -207,7 +207,10 @@ class PartOfSyntax(UIDMixing):
     @property
     def udocstring(self):
         """unicode: Documentation of the object."""
-        return unicode(self.docstring, 'utf-8')
+        doc = self.docstring
+        if type(doc) is not unicode:
+            doc = unicode(doc, 'utf-8', 'replace')
+        return doc
 
     @property
     def docstring(self):
