@@ -204,7 +204,7 @@ def verif_type_fond_fiss(ndim, FOND_FISS):
             UTMESS('F', 'RUPTURE0_12')
 
 #-------------------------------------------------------------------------
-# Returns list of nodes FOND_FISS 
+# Returns list of nodes FOND_FISS
 
 def get_noeud_fond_fiss(FOND_FISS):
     """ retourne la liste des noeuds de FOND_FISS"""
@@ -222,7 +222,7 @@ def get_noeud_fond_fiss(FOND_FISS):
 
 #-------------------------------------------------------------------------
 
-# Returns a list of nodes FOND_FISS compute 
+# Returns a list of nodes FOND_FISS compute
 
 def get_noeud_a_calculer(Lnoff, ndim, FOND_FISS, MAILLAGE, EnumTypes, args):
     """ retourne la liste des noeuds de FOND_FISS a calculer"""
@@ -303,12 +303,12 @@ def get_noeud_a_calculer(Lnoff, ndim, FOND_FISS, MAILLAGE, EnumTypes, args):
             Lnocal = tuple(set(Lnoff) - set(NO_SANS))
         else:
             Lnocal = tuple(Lnoff)
-       
-        Lnocal=Lnocal[::2] 
+
+        Lnocal=Lnocal[::2]
     return Lnocal
 
 #-------------------------------------------------------------------------
-# Returns the coordinates of nodes in FOND_FISS dictionary 
+# Returns the coordinates of nodes in FOND_FISS dictionary
 def get_coor_libre(self, Lnoff, RESULTAT, ndim):
     """ retourne les coordonnees des noeuds de FOND_FISS en dictionnaire"""
 
@@ -345,7 +345,7 @@ def get_coor_libre(self, Lnoff, RESULTAT, ndim):
     return dict(l_coorf)
 
 #-------------------------------------------------------------------------
-# Returns to the normal at each point of the bottom ( VNOR ) and propagation direction vectors ( VDIR ) 
+# Returns to the normal at each point of the bottom ( VNOR ) and propagation direction vectors ( VDIR )
 
 def get_direction(Nnoff, ndim, DTANOR, DTANEX, Lnoff, FOND_FISS):
     """ retourne les normales en chaque point du fond (VNOR)
@@ -394,7 +394,7 @@ def get_direction(Nnoff, ndim, DTANOR, DTANEX, Lnoff, FOND_FISS):
     return (dicVDIR, dicVNOR)
 
 #-------------------------------------------------------------------------
-# Tables of sup and inf for displacements and stress for every crack points 
+# Tables of sup and inf for displacements and stress for every crack points
 
 def get_tab_dep(self, Lnocal, Nnocal, d_coorf, dicVDIR, dicVNOR, RESULTAT, MODEL,
                 ListmaS, ListmaI, NB_NOEUD_COUPE, hmax, syme_char, PREC_VIS_A_VIS,MAILLAGE):
@@ -461,7 +461,7 @@ def get_tab_dep(self, Lnocal, Nnocal, d_coorf, dicVDIR, dicVNOR, RESULTAT, MODEL
                               VIS_A_VIS=_F(MAILLE_1=ListmaS),
                               LIGN_COUPE=mcfact)
 
-    __TlibS = CALC_TABLE( TABLE= __TlibSd, 
+    __TlibS = CALC_TABLE( TABLE= __TlibSd,
                 ACTION=_F(OPERATION='COMB',
                            TABLE=__TlibSs,
                            NOM_PARA=('NUME_ORDRE', 'COOR_X','COOR_Y', 'COOR_Z'),
@@ -477,7 +477,7 @@ def get_tab_dep(self, Lnocal, Nnocal, d_coorf, dicVDIR, dicVNOR, RESULTAT, MODEL
                               MODELE=MODEL,
                               LIGN_COUPE=mcfactH)
 
-    __TlibH = CALC_TABLE( TABLE= __TlibHd, 
+    __TlibH = CALC_TABLE( TABLE= __TlibHd,
                 ACTION=_F(OPERATION='COMB',
                            TABLE=__TlibHs,
                            NOM_PARA=('NUME_ORDRE', 'COOR_X','COOR_Y', 'COOR_Z'),
@@ -493,7 +493,7 @@ def get_tab_dep(self, Lnocal, Nnocal, d_coorf, dicVDIR, dicVNOR, RESULTAT, MODEL
                               MODELE=MODEL,
                               LIGN_COUPE=mcfactV)
 
-    __TlibV = CALC_TABLE( TABLE= __TlibVd, 
+    __TlibV = CALC_TABLE( TABLE= __TlibVd,
                  ACTION=_F(OPERATION='COMB',
                            TABLE=__TlibVs,
                            NOM_PARA=('NUME_ORDRE', 'COOR_X','COOR_Y', 'COOR_Z'),
@@ -511,7 +511,7 @@ def get_tab_dep(self, Lnocal, Nnocal, d_coorf, dicVDIR, dicVNOR, RESULTAT, MODEL
                               MODELE=MODEL,
                               LIGN_COUPE=mcfactQ)
 
-    __TlibQ = CALC_TABLE( TABLE= __TlibQd, 
+    __TlibQ = CALC_TABLE( TABLE= __TlibQd,
                ACTION=_F(OPERATION='COMB',
                            TABLE=__TlibQs,
                            NOM_PARA=('NUME_ORDRE', 'COOR_X','COOR_Y', 'COOR_Z'),
@@ -533,13 +533,13 @@ def get_tab_dep(self, Lnocal, Nnocal, d_coorf, dicVDIR, dicVNOR, RESULTAT, MODEL
                                   LIGN_COUPE=mcfact)
 
 
-        __TlibI = CALC_TABLE( TABLE= __TlibIs, 
+        __TlibI = CALC_TABLE( TABLE= __TlibIs,
                    ACTION=_F(OPERATION='COMB',
                            TABLE=__TlibId,
                            NOM_PARA=('NUME_ORDRE', 'ABSC_CURV','COOR_X','COOR_Y', 'COOR_Z'),
                            RESTREINT='NON',),)
 
-    else: 
+    else:
          __TlibI=__TlibS
 
     return (__TlibS.EXTR_TABLE(), __TlibI.EXTR_TABLE(), __TlibH.EXTR_TABLE(), __TlibV.EXTR_TABLE(), __TlibQ.EXTR_TABLE() )
@@ -566,7 +566,7 @@ def get_dico_levres(lev, FOND_FISS, ndim, Lnoff, Nnoff):
     return dict(Nnorm)
 #-------------------------------------------------------------------------
 
-# Returns the dictionary of coordinates of the nodes of the lips to the rules meshes 
+# Returns the dictionary of coordinates of the nodes of the lips to the rules meshes
 
 def get_coor_regle(self, RESULTAT, ndim, Lnoff, Lnocal, dicoS, syme_char, dicoI):
     """retourne le dictionnaire des coordonnees des noeuds des lèvres pour les maillages regles"""
@@ -616,7 +616,7 @@ def get_coor_regle(self, RESULTAT, ndim, Lnoff, Lnocal, dicoS, syme_char, dicoI)
                            NOM_CMP=nomcms,
                            OPERATION='EXTRACTION',),)
 
-    __NCOOR = CALC_TABLE( TABLE= __NCOOR1, 
+    __NCOOR = CALC_TABLE( TABLE= __NCOOR1,
                  ACTION=_F(OPERATION='COMB',
                            TABLE=__NCOOR2,
 #                           NOM_PARA=('ABSC_CURV', 'NUME_ORDRE'),
@@ -637,7 +637,7 @@ def get_coor_regle(self, RESULTAT, ndim, Lnoff, Lnocal, dicoS, syme_char, dicoI)
     ns = map(S.rstrip, ns)
     l_coor = [[ns[i], xs[i], ys[i], zs[i]] for i in xrange(nbt)]
     l_coor = [(i[0], i[1:]) for i in l_coor]
-    
+
     return (dict(l_coor), __NCOOR.EXTR_TABLE())
 
 #-------------------------------------------------------------------------
@@ -878,7 +878,7 @@ def get_direction_xfem(Nnoff, Vpropa, Coorfo, ndim):
     return (VDIR, VNOR, absfon)
 
 #-------------------------------------------------------------------------
-# Returns the jump table 
+# Returns the jump table
 
 def get_sauts_xfem(self, Nnoff, Coorfo, VDIR, hmax, NB_NOEUD_COUPE, dmax, __RESX):
     """retourne la table des sauts"""
@@ -1033,7 +1033,7 @@ def get_liste_inst(tabsup, args):
 
 #-------------------------------------------------------------------------
 
-# Returns a list of frequencies 
+# Returns a list of frequencies
 def get_liste_freq(tabsup, args):
     """retourne la liste des fréquences"""
     from Utilitai.Utmess import UTMESS
@@ -1177,7 +1177,7 @@ def get_propmat_tempe(MATER, tabtemp, Lnofon, ino, inst, PRECISION):
 
 #----------------------------------------------------------------------------------------------------
 
-# Return the sup travel 
+# Return the sup travel
 def get_depl_sup(FOND_FISS, tabsupi, ndim, Lnofon, d_coor, ino, TYPE_MAILLAGE):
     """retourne les déplacements sup"""
 
@@ -1253,7 +1253,7 @@ def get_depl_sup(FOND_FISS, tabsupi, ndim, Lnofon, d_coor, ino, TYPE_MAILLAGE):
 
 #-------------------------------------------------------------------------
 
-# returns inf travel 
+# returns inf travel
 def get_depl_inf(FOND_FISS, tabinfi, ndim, Lnofon, syme_char, d_coor, ino, TYPE_MAILLAGE):
     """retourne les déplacements inf"""
     import numpy as NP
@@ -1440,7 +1440,7 @@ def get_pgl(syme_char, FISSURE, ino, VDIR, VNOR, dicVDIR, dicVNOR, Lnofon, ndim)
     return (pgl)
 
 #-------------------------------------------------------------------------
-# Jump displacement  
+# Jump displacement
 
 def get_saut(self, pgl, ds, Ss, di, Si, Sh, Sv, Sq, INFO, FISSURE, syme_char, abscs, ndim):
     """retourne le saut de déplacements dans le nouveau repère"""
@@ -1469,18 +1469,18 @@ def get_saut(self, pgl, ds, Ss, di, Si, Sh, Sv, Sq, INFO, FISSURE, syme_char, ab
         sauttt [2]= NP.array ([[Spls[2][j]/((Spls[1][j])+(Spls[0][j])) for j in range (len (Spls[2]))]])
 
     sautt = Spls
- 
+
     for i in range(1,len(dpls[0])):
         dpls[1][i]=dpls[1][i]-dpls[1][0]
-    
+
         dpls[0][i]=0
         dpls[2][i]=0
-    
+
     dpls[1][0]=0
 
     if FISSURE:
         saut = 2.*dpls
-        sautt = Spls      
+        sautt = Spls
 
     elif syme_char == 'NON':
         dpli = NP.dot(pgl, di)
@@ -1489,10 +1489,10 @@ def get_saut(self, pgl, ds, Ss, di, Si, Sh, Sv, Sq, INFO, FISSURE, syme_char, ab
                 dpli[1][i]=dpli[1][i]-dpli[1][0]
                 dpli[0][i]=0
                 dpli[2][i]=0
-    
+
         dpli[1][0]=0
         saut = -2.*dpls
-        sautt = Spls 
+        sautt = Spls
 
     else:
         dpli = [NP.multiply(dpls[0], -1.), dpls[1], dpls[2]]
@@ -1578,14 +1578,14 @@ def get_meth1(self, abscs, absch, abscq, coetd, isig, tgsig,isigt,ttgsig, isigtt
     from Accas import _F
     import aster
     import numpy as NP
-    import math 
+    import math
 
     CREA_TABLE = self.get_cmd('CREA_TABLE')
     DETRUIRE = self.get_cmd('DETRUIRE')
 
     nabs = len(abscs)
-    nabh = len (absch)  
-    nabq = len (abscq) 
+    nabh = len (absch)
+    nabq = len (abscq)
 
 
 # --- Calculation of T
@@ -1601,13 +1601,13 @@ def get_meth1(self, abscs, absch, abscq, coetd, isig, tgsig,isigt,ttgsig, isigtt
     y1 = saut2[:, 5:-1] / x1
     y2 = saut2[:, 6:nabs] / x2
 
-    ys1 = sautt2[:, 5:-1] 
+    ys1 = sautt2[:, 5:-1]
     ys2 = sautt2[:, 6:nabs]
 
-    yt1 = sauttt2[:, 5:-1] 
+    yt1 = sauttt2[:, 5:-1]
     yt2 = sauttt2[:, 6:nabh]
 
-    yq1 = sauttt2[:, 5:-1] 
+    yq1 = sauttt2[:, 5:-1]
     yq2 = sauttt2[:, 6:nabq]
 
     t = y1 - x1 * (y2 - y1) / (x2 - x1)
@@ -1842,7 +1842,7 @@ def post_t_q_ops(self, MODELISATION, FOND_FISS, FISSURE, MATER, RESULTAT,
     from Accas import _F
     from Utilitai.Table import Table, merge
     from SD.sd_mater import sd_compor1
-    from Cata.cata import mode_meca
+    from code_aster.Cata.DataStructure import mode_meca
     from Utilitai.Utmess import UTMESS, MasquerAlarme, RetablirAlarme
 
     EnumTypes = (ListType, TupleType)
@@ -2281,7 +2281,7 @@ def post_t_q_ops(self, MODELISATION, FOND_FISS, FISSURE, MATER, RESULTAT,
             affiche_traitement(FOND_FISS, Lnofon, ino)
 
 #     table 'depsup' et 'depinf'
-        
+
 
         if ndim == 2:
             if syme_char == 'NON' or syme_char == 'OUI':
@@ -2323,10 +2323,10 @@ def post_t_q_ops(self, MODELISATION, FOND_FISS, FISSURE, MATER, RESULTAT,
             tabV  =__TlibV
             tabQ  =__TlibQ
         else:
- 
+
                 tabsup = get_tab(self, 'sup', ino, __TlibS, Lnosup, TTSo,
                          FOND_FISS, TYPE_MAILLAGE, __tabl_depl, syme_char)
-                
+
                 tabinf = get_tab(self, 'inf', ino, __TlibI, Lnoinf, TTSo,
                          FOND_FISS, TYPE_MAILLAGE, __tabl_depl, syme_char)
 
@@ -2385,7 +2385,7 @@ def post_t_q_ops(self, MODELISATION, FOND_FISS, FISSURE, MATER, RESULTAT,
 
 
             (absch, dh, Sh) = get_depl_H(FOND_FISS, tabHi, ndim,
-                                       Lnofon, syme_char, d_coor, ino, TYPE_MAILLAGE) 
+                                       Lnofon, syme_char, d_coor, ino, TYPE_MAILLAGE)
 
             (abscv, dv, Sv) = get_depl_V (FOND_FISS, tabVi, ndim,
                                        Lnofon, syme_char, d_coor, ino, TYPE_MAILLAGE)
@@ -2465,7 +2465,7 @@ def post_t_q_ops(self, MODELISATION, FOND_FISS, FISSURE, MATER, RESULTAT,
                                 ACTION=_F(OPERATION='TRI',
                                           NOM_PARA=('FREQ', 'ABSC_CURV'),
                                           ORDRE='CROISSANT'))
-    
+
         else:
             tabout = CALC_TABLE(reuse=tabout,
                                 TABLE=tabout,

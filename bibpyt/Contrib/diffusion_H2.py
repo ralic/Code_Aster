@@ -18,9 +18,10 @@
 
 import numpy as NP
 
+from math import log
 from code_aster.Cata.Syntax import *
 from code_aster.Cata.DataStructure import *
-from code_aster.Cata.Commons import *
+from code_aster.Cata.Commands import (AFFE_CHAR_THER, AFFE_MATERIAU, CALC_CHAMP, CALC_CHAM_ELEM, CREA_CHAMP, DEFI_MATERIAU, PROJ_CHAMP)
 
 
 def NT(epsp, Nl, Kt, a1, a2, a3):

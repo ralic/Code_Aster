@@ -15,7 +15,9 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-from Cata.cata import *
+from code_aster.Cata.Syntax import *
+from code_aster.Cata.DataStructure import *
+from code_aster.Cata.Commons import *
 
 POST_T_Q=MACRO(nom="POST_T_Q",
                     op=OPS('Contrib.post_t_q_ops.post_t_q_ops'),
@@ -40,11 +42,11 @@ POST_T_Q=MACRO(nom="POST_T_Q",
          b_fond_fiss   =BLOC (condition="FOND_FISS!= None",
 
               b_no_mod =BLOC (condition="AsType(RESULTAT)!= mode_meca",
-                        
+
                         EVOL_THER   = SIMP(statut='f',typ=(evol_ther),fr=tr("Température sur le fond de fissure")),
                         b_ref_3D    = BLOC (condition="MODELISATION=='3D' ",
                                   TYPE_MAILLAGE = SIMP(statut='f',typ='TXM',into=("LIBRE","REGLE"),defaut="REGLE"),
-                                  ),  
+                                  ),
                              ),
               b_mod    =BLOC (condition="AsType(RESULTAT)== mode_meca and MODELISATION=='3D'",
                                   TYPE_MAILLAGE = SIMP(statut='f',typ='TXM',into=("REGLE",),defaut="REGLE"),
@@ -72,10 +74,10 @@ POST_T_Q=MACRO(nom="POST_T_Q",
 
 #         MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster),
 
-         
+
          PREC_VIS_A_VIS=SIMP(statut='f',typ='R',defaut=0.1),
 
-         b_mod_meca  =BLOC (condition="AsType(RESULTAT)== mode_meca ",      
+         b_mod_meca  =BLOC (condition="AsType(RESULTAT)== mode_meca ",
          TOUT_ORDRE    =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          NUME_ORDRE    =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
          LIST_ORDRE    =SIMP(statut='f',typ=listis_sdaster),
@@ -95,7 +97,7 @@ POST_T_Q=MACRO(nom="POST_T_Q",
          b_no_mod_meca  =BLOC (condition="AsType(RESULTAT)!= mode_meca ",
          TOUT_ORDRE    =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          NUME_ORDRE    =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
-         LIST_ORDRE    =SIMP(statut='f',typ=listis_sdaster),   
+         LIST_ORDRE    =SIMP(statut='f',typ=listis_sdaster),
          INST          =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
          LIST_INST     =SIMP(statut='f',typ=listr8_sdaster),
              b_acce_reel     =BLOC(condition="(INST != None)or(LIST_INST != None)",
