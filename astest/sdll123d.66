@@ -89,7 +89,7 @@ def EXTR_MATR(matrrr,vall) :
                         vectddl[gg]=refddl[hh]
                         gg=gg+1
                     vecc[hh]=1
-                ste=0                
+                ste=0
                 pp=pp+1
                 limm=nnddl[pp-1]
                 vecc=[1]*limm

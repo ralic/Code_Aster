@@ -16,7 +16,7 @@
 # ======================================================================
 # person_in_charge: mohamed-amine.hassini at edf.fr
 #
-
+import aster
 import aster_core
 import numpy as NP
 import numpy.linalg as LA

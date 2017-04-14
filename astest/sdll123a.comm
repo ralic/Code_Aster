@@ -15,6 +15,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
+import aster
 import aster_core
 import numpy as NP
 import numpy.linalg as LA
@@ -82,7 +83,7 @@ ASSEMBLAGE(MODELE=MODELE,
                            _F(MATRICE=CO('MASSE'),
                               OPTION='MASS_MECA',),
                            _F(MATRICE=CO('GYASS'),
-                           #  OPTION='MECA_GYRO', ), 
+                           #  OPTION='MECA_GYRO', ),
                               OPTION='MECA_GYRO',  GROUP_MA=('ROTOR','DISQUES',)),
                            #  OPTION='MECA_GYRO',  GROUP_MA=('ROTOR')),
                            _F(MATRICE=CO('AMOR'),

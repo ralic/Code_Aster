@@ -14,7 +14,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# ======================================================================
+
 # CAS TEST INFORMATIQUE DE VALIDATION DES SOLVEURS MODAUX SORENSEN ET QZ
 # EN GENERALISE ET QUADRATIQUE NON SYMETRIQUES (EN STRUCTURE ET EN
 # VALEURS NUMERIQUES)
@@ -31,8 +31,8 @@
 #     SYM ET AVEC VALEURS NON SYM.
 #   - TECHNIQUE DE REDUCTION LINEAIRE POUR PASSAGE ASTER/PYTHON
 #   - EN QUADRATIQUE, VARIANTES DE SORENSEN
-# ======================================================================
 
+import aster
 import aster_core
 import numpy as NP
 import numpy.linalg as LA

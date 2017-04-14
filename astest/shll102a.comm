@@ -17,6 +17,7 @@
 # CALCUL HARMONIQUE
 # REFERENCE : ROTORDYNAMICS, PREDICTION IN ENGINEERING
 #             M. LALANNE, G. FERRARIS - WILEY, pp 68-75
+import aster
 import numpy as NP
 import numpy.linalg as LA
 
@@ -68,12 +69,12 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                             MATER=ACIER,),);
 
 CARELEM=AFFE_CARA_ELEM(INFO=2,
-                       MODELE=MODELE,                   
+                       MODELE=MODELE,
                        POUTRE=_F(GROUP_MA='ROTOR',
                                  SECTION='GENERALE',
                                  CARA=('A','IY','IZ',
                                        'AY','AZ','JX',
-                                       'RY','RZ','RT',), 
+                                       'RY','RZ','RT',),
                                  VALE=(7.85398E-03,4.90874E-06,4.90874E-06,
                                        1.11111E+00,1.11111E+00,9.81748E-06,
                                        5.00000E-02,5.00000E-02,5.00000E-02,),),
