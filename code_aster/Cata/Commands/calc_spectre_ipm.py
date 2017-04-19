@@ -35,7 +35,7 @@ CALC_SPECTRE_IPM=MACRO(nom="CALC_SPECTRE_IPM",
                 NOM           =SIMP(statut='o',typ='TXM',),
                 regles=(AU_MOINS_UN('GROUP_NO','NOEUD'),),
                 GROUP_NO      =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-                NOEUD         =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+                NOEUD         =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
                
                 RAPPORT_MASSE_TOTALE           = SIMP(statut='o',typ='R',max=1),
                 COEF_MASS_EQUIP     = SIMP(statut='o', typ='R', max='**'),

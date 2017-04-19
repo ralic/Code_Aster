@@ -35,34 +35,34 @@ DEFI_FOND_FISS=OPER(nom="DEFI_FOND_FISS",
 
                      TYPE_FOND = SIMP(statut='f',typ='TXM',into=("OUVERT","FERME","INF","SUP"),defaut="OUVERT"),
 
-                     NOEUD    = SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+                     NOEUD    = SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
                      GROUP_NO = SIMP(statut='f',typ=grno,max=1   ),
                      GROUP_MA = SIMP(statut='f',typ=grma,max=1   ),
-                     MAILLE   = SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+                     MAILLE   = SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
                      regles=(UN_PARMI('GROUP_NO','NOEUD','GROUP_MA','MAILLE'),),
 
                      # possibilite d'ordonnencement automatique du fond si groupe de mailles
                      b_grma = BLOC(condition = """(exists("GROUP_MA") or exists("MAILLE")) and not equal_to("TYPE_FOND", 'FERME')""",
-                                   NOEUD_ORIG    =SIMP(statut='f',typ=no,  max=1),
+                                   NOEUD_ORIG    =SIMP(statut='c',typ=no,  max=1),
                                    GROUP_NO_ORIG =SIMP(statut='f',typ=grno,max=1),
                                    regles=(EXCLUS('NOEUD_ORIG','GROUP_NO_ORIG'),),
 
                                    # si ordo
                                    b_ordo = BLOC(condition = """exists("NOEUD_ORIG") or exists("GROUP_NO_ORIG")""",
-                                                 NOEUD_EXTR    = SIMP(statut='f',typ=no,  max=1),
+                                                 NOEUD_EXTR    = SIMP(statut='c',typ=no,  max=1),
                                                  GROUP_NO_EXTR = SIMP(statut='f',typ=grno,max=1),
                                                  regles=(EXCLUS('NOEUD_EXTR','GROUP_NO_EXTR'),),
                                                 ),
                                   ),
                      # possibilite d'ordonnencement automatique du fond si groupe de mailles
                      b_grma_ferme= BLOC(condition = """(exists("GROUP_MA") or exists("MAILLE")) and equal_to("TYPE_FOND", 'FERME')""",
-                                        NOEUD_ORIG    =SIMP(statut='f',typ=no,  max=1),
+                                        NOEUD_ORIG    =SIMP(statut='c',typ=no,  max=1),
                                         GROUP_NO_ORIG =SIMP(statut='f',typ=grno,max=1),
                                         regles=(EXCLUS('NOEUD_ORIG','GROUP_NO_ORIG'),),
 
                                         # si ordo
                                         b_ordo_ferme = BLOC(condition = """exists("NOEUD_ORIG") or exists("GROUP_NO_ORIG")""",
-                                                            MAILLE_ORIG   = SIMP(statut='f',typ=ma,  max=1),
+                                                            MAILLE_ORIG   = SIMP(statut='c',typ=ma,  max=1),
                                                             GROUP_MA_ORIG = SIMP(statut='f',typ=grma,  max=1),
                                                             regles=(UN_PARMI('MAILLE_ORIG','GROUP_MA_ORIG'),),
                                                            ),
@@ -88,7 +88,7 @@ DEFI_FOND_FISS=OPER(nom="DEFI_FOND_FISS",
     LEVRE_SUP =FACT(statut='f',max=1,
                     regles=(UN_PARMI('GROUP_MA','MAILLE'),),
                     GROUP_MA =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-                    MAILLE   =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+                    MAILLE   =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
                     ),
 
     b_levre_inf  = BLOC(condition = """exists("LEVRE_SUP") and equal_to("SYME", 'NON')""",
@@ -96,7 +96,7 @@ DEFI_FOND_FISS=OPER(nom="DEFI_FOND_FISS",
                         LEVRE_INF =FACT(statut='o',max=1,
                                         regles=(UN_PARMI('GROUP_MA','MAILLE'),),
                                         GROUP_MA =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-                                        MAILLE   =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+                                        MAILLE   =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
                                         ),
                         ),
 

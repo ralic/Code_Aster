@@ -36,7 +36,7 @@ DEFI_GEOM_FIBRE=OPER(
         GROUP_FIBRE       =SIMP(statut='o',typ='TXM',min=1,max=1),
         TOUT_SECT         =SIMP(statut='f',typ='TXM',into=("OUI",) ),
         GROUP_MA_SECT     =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-        MAILLE_SECT       =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+        MAILLE_SECT       =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
 
         MAILLAGE_SECT     =SIMP(statut='o',typ=maillage_sdaster),
         COOR_AXE_POUTRE   =SIMP(statut='o',typ='R',min=2,max=2),

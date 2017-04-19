@@ -95,7 +95,7 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
            CARA_ELEM       =SIMP(statut='f',typ=cara_elem ),
            CHARGE          =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**' ),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-           MAILLE          =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**'),
+           MAILLE          =SIMP(statut='c',typ=ma,validators=NoRepeat(),max='**'),
          ),
 
          b_rigi_gyro = BLOC( condition = """equal_to("OPTION", 'RIGI_GYRO')""",
@@ -103,7 +103,7 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
            CARA_ELEM       =SIMP(statut='f',typ=cara_elem ),
            CHARGE          =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**' ),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-           MAILLE          =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**'),
+           MAILLE          =SIMP(statut='c',typ=ma,validators=NoRepeat(),max='**'),
          ),
 
          b_amor_meca       =BLOC(condition = """equal_to("OPTION", 'AMOR_MECA')""",

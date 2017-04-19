@@ -31,7 +31,7 @@ CALC_CHAM_ELEM=OPER(nom="CALC_CHAM_ELEM",op=38,sd_prod=cham_elem,
          regles=(EXCLUS('TOUT','GROUP_MA',),EXCLUS('TOUT','MAILLE',),),
          TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-         MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+         MAILLE          =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
 
          INST            =SIMP(statut='f',typ='R',defaut= 0.E+0),
          ACCE            =SIMP(statut='f',typ=cham_no_sdaster),

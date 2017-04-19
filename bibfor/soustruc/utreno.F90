@@ -1,5 +1,6 @@
-subroutine utreno(mcf, mcs, iocc, ma, noeud)
+subroutine utreno(mcf, mcs, iocc, ma, noeud, ok_noeud)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/utmess.h"
@@ -7,9 +8,10 @@ subroutine utreno(mcf, mcs, iocc, ma, noeud)
     integer :: iocc
     character(len=8) :: ma, noeud
     character(len=*) :: mcf, mcs
+    aster_logical, optional :: ok_noeud
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,20 +40,29 @@ subroutine utreno(mcf, mcs, iocc, ma, noeud)
     character(len=24) :: valk(2), nogno
     integer :: iarg
 !     ------------------------------------------------------------------
+    aster_logical :: ok_noeud2
+!     ------------------------------------------------------------------
 !
+
+    ok_noeud2 = .false.
     noeud = '        '
+    
     if (mcs(1:4) .eq. 'ORIG') then
         mcnoeu = 'NOEUD_ORIG'
         mcgrno = 'GROUP_NO_ORIG'
     else if (mcs(1:4) .eq. 'EXTR') then
         mcnoeu = 'NOEUD_EXTR'
         mcgrno = 'GROUP_NO_EXTR'
+    else if (mcs(1:4) .eq. 'REFE') then
+        mcnoeu = 'NOEUD_REFE'
+        mcgrno = 'GROUP_NO_REFE'
     endif
 !
     call getvtx(mcf, mcnoeu, iocc=iocc, nbval=0, nbret=n1)
     if (n1 .ne. 0) then
         call getvem(ma, 'NOEUD', mcf, mcnoeu, iocc,&
                     iarg, 1, noeud, n1)
+        ok_noeud2 = .true.
     endif
 !
     call getvtx(mcf, mcgrno, iocc=iocc, nbval=0, nbret=n1)
@@ -66,6 +77,9 @@ subroutine utreno(mcf, mcs, iocc, ma, noeud)
             valk(2) = noeud
             call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
         endif
+        ok_noeud2 = .true.
     endif
+    
+    if (present(ok_noeud)) ok_noeud=ok_noeud2
 !
 end subroutine

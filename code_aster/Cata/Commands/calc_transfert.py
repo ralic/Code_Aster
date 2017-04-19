@@ -40,12 +40,12 @@ CALC_TRANSFERT=MACRO(nom="CALC_TRANSFERT",
          ENTREE     =FACT(statut='o',max=1,
             regles=(UN_PARMI('GROUP_NO','NOEUD',),),
               GROUP_NO        =SIMP(statut='f',typ=grno,max=1),
-              NOEUD           =SIMP(statut='f',typ=no  ,max=1),),
+              NOEUD           =SIMP(statut='c',typ=no  ,max=1),),
 
         SORTIE      =FACT(statut='o',max=1,
                       regles=(UN_PARMI('GROUP_NO','NOEUD',),),
               GROUP_NO        =SIMP(statut='f',typ=grno,max=1),
-              NOEUD           =SIMP(statut='f',typ=no  ,max=1),),
+              NOEUD           =SIMP(statut='c',typ=no  ,max=1),),
 
         REPERE      =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
 

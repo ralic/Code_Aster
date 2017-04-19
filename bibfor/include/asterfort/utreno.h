@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,12 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine utreno(mcf, mcs, iocc, ma, noeud)
+    subroutine utreno(mcf, mcs, iocc, ma, noeud, ok_noeud)
         character(len=*) :: mcf
         character(len=*) :: mcs
         integer :: iocc
         character(len=8) :: ma
         character(len=8) :: noeud
+        aster_logical, optional :: ok_noeud
     end subroutine utreno
 end interface

@@ -41,7 +41,7 @@ MACR_ELEM_STAT=OPER(nom="MACR_ELEM_STAT",op=86,sd_prod=macr_elem_stat,reentrant=
          ),
          EXTERIEUR       =FACT(statut='f',
            regles=(AU_MOINS_UN('NOEUD','GROUP_NO'),),
-           NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+           NOEUD           =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
            GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
          ),
          RIGI_MECA       =FACT(statut='f',

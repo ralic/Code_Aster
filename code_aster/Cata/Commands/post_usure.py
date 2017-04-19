@@ -41,7 +41,7 @@ POST_USURE=OPER(nom="POST_USURE",op=153,sd_prod=table_sdaster,reentrant='f',
 
          b_resu_gene  =BLOC(condition = """exists("RESU_GENE")""",
            regles=UN_PARMI('NOEUD','GROUP_NO'),
-            NOEUD           =SIMP(statut='f',typ=no),
+            NOEUD           =SIMP(statut='c',typ=no),
             GROUP_NO        =SIMP(statut='f',typ=grno),),
          b_archard       =BLOC(condition = """equal_to("LOI_USURE", 'ARCHARD')""",
            regles=(UN_PARMI('MOBILE','MATER_USURE','SECTEUR'),

@@ -25,7 +25,8 @@ MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER",
                            )
 
 MAILLAGE=DEFI_GROUP( reuse=MAILLAGE,   MAILLAGE=MAILLAGE,
-  CREA_GROUP_MA=_F(  NOM = 'GXXXXXX_TOUT', TOUT = 'OUI'))
+  CREA_GROUP_MA=_F(  NOM = 'GXXXXXX_TOUT', TOUT = 'OUI'),
+  CREA_GROUP_NO=_F(  NOM = 'NOREF', NOEUD = ('N1')))
 
 MODELE=AFFE_MODELE(     MAILLAGE=MAILLAGE,
                              AFFE=_F(  GROUP_MA = 'GXXXXXX_POU_D_T',
@@ -474,7 +475,7 @@ SISM_MU1=COMB_SISM_MODAL(      MODE_MECA=MODE,
                DEPL_MULT_APPUI=(_F(  NUME_CAS = 1,
                                      NOM_CAS ='DEPL EN N_ENCASTRE',
                                      MODE_STAT = MODE_STA,
-                                     NOEUD_REFE = 'N1',
+                                     GROUP_NO_REFE = 'NOREF',
                                      GROUP_NO = 'GXXXXXX_ENCASTRE',
                                      DX = 0.,  DY = 0.),
                                 _F(   NUME_CAS = 2,

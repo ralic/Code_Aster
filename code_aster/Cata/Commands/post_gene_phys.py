@@ -56,9 +56,9 @@ POST_GENE_PHYS  = OPER( nom="POST_GENE_PHYS",op=  58,sd_prod=table_sdaster,
                               b_prec_abso = BLOC(condition = """(equal_to("CRITERE", 'ABSOLU'))""",
                               PRECISION   = SIMP(statut = 'o', typ='R',),),),
 
-                      NOEUD      = SIMP(statut = 'f', typ=no  , validators = NoRepeat(), max = '**'),
+                      NOEUD      = SIMP(statut = 'c', typ=no  , validators = NoRepeat(), max = '**'),
                       GROUP_NO   = SIMP(statut = 'f', typ=grno, validators = NoRepeat(), max = '**'),
-                      MAILLE     = SIMP(statut = 'f', typ=ma  , validators = NoRepeat(), max = '**'),
+                      MAILLE     = SIMP(statut = 'c', typ=ma  , validators = NoRepeat(), max = '**'),
                       GROUP_MA   = SIMP(statut = 'f', typ=grma, validators = NoRepeat(), max = '**'),
 
                       b_acce_abs      = BLOC(condition = """(equal_to("NOM_CHAM", 'ACCE_ABSOLU'))""",

@@ -60,7 +60,7 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
                              fr=tr("le calcul sera effectue sur toutes les mailles")),
      GROUP_MA         = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
                              fr=tr("le calcul ne sera effectue que sur ces groupes de mailles")),
-     MAILLE           = SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**',
+     MAILLE           = SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**',
                              fr=tr("le calcul ne sera effectue que sur ces mailles")),
 
      EXCIT       = FACT(statut='f',max='**',

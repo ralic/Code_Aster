@@ -66,7 +66,7 @@ CALC_FERRAILLAGE=OPER(nom="CALC_FERRAILLAGE",op=175,sd_prod=calc_ferraillage_pro
            regles=(UN_PARMI('TOUT','GROUP_MA','MAILLE'),),
            TOUT       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            GROUP_MA   =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-           MAILLE     =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**'),
+           MAILLE     =SIMP(statut='c',typ=ma,validators=NoRepeat(),max='**'),
            ENROBG     =SIMP(statut='o',typ='R'), # enrobage
            CEQUI      =SIMP(statut='f',typ='R'), # coefficient d'équivalence acier/béton  (pour ELS)
            SIGM_ACIER =SIMP(statut='o',typ='R'), # contrainte admissible dans l'acier

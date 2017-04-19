@@ -179,15 +179,15 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT", op=30, sd_prod   = char_contact, r
 # -- Liaison unilatérale
                                           regles=(UN_PARMI('GROUP_MA','MAILLE','GROUP_NO','NOEUD'),),
                                           GROUP_MA        =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
-                                          MAILLE          =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
+                                          MAILLE          =SIMP(statut='c',typ=ma   ,validators=NoRepeat(),max='**'),
                                           GROUP_NO        =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
-                                          NOEUD           =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
+                                          NOEUD           =SIMP(statut='c',typ=no   ,validators=NoRepeat(),max='**'),
 #
                                           NOM_CMP         =SIMP(statut='o',typ='TXM',max='**'),
                                           COEF_IMPO       =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule),),
                                           COEF_MULT       =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule),max='**'),
 # -- Incompatibilité avec CL
-                                          SANS_NOEUD      =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
+                                          SANS_NOEUD      =SIMP(statut='c',typ=no   ,validators=NoRepeat(),max='**'),
                                           SANS_GROUP_NO   =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
                                 ), # fin mot-clé facteur ZONE
          ), # fin b_affe_unil
@@ -202,9 +202,9 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT", op=30, sd_prod   = char_contact, r
                                           regles=(UN_PARMI('GROUP_MA_ESCL','MAILLE_ESCL'),
                                                   UN_PARMI('GROUP_MA_MAIT','MAILLE_MAIT'),),
                                           GROUP_MA_MAIT   =SIMP(statut='f',typ=grma ,max=1),
-                                          MAILLE_MAIT     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
+                                          MAILLE_MAIT     =SIMP(statut='c',typ=ma   ,validators=NoRepeat(),max='**'),
                                           GROUP_MA_ESCL   =SIMP(statut='f',typ=grma ,max=1),
-                                          MAILLE_ESCL     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
+                                          MAILLE_ESCL     =SIMP(statut='c',typ=ma   ,validators=NoRepeat(),max='**'),
 #
                                           NORMALE         =SIMP(statut='f',typ='TXM',defaut="MAIT", into=("MAIT","MAIT_ESCL","ESCL"),),
 #
@@ -246,9 +246,9 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT", op=30, sd_prod   = char_contact, r
                                           DIST_APPA       =SIMP(statut='f',typ='R'  ,defaut=-1.0),
                                           TOLE_PROJ_EXT   =SIMP(statut='f',typ='R'  ,defaut=0.50),
 # --- Incompatibilité avec CL
-                                          SANS_NOEUD      =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
+                                          SANS_NOEUD      =SIMP(statut='c',typ=no   ,validators=NoRepeat(),max='**'),
                                           SANS_GROUP_NO   =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
-                                          SANS_MAILLE     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
+                                          SANS_MAILLE     =SIMP(statut='c',typ=ma   ,validators=NoRepeat(),max='**'),
                                           SANS_GROUP_MA   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
 # --- Mode sans calcul
                                           RESOLUTION      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
@@ -287,9 +287,9 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT", op=30, sd_prod   = char_contact, r
                                           regles=(UN_PARMI('GROUP_MA_ESCL','MAILLE_ESCL'),
                                                   UN_PARMI('GROUP_MA_MAIT','MAILLE_MAIT'),),
                                           GROUP_MA_MAIT   =SIMP(statut='f',typ=grma ,max=1),
-                                          MAILLE_MAIT     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
+                                          MAILLE_MAIT     =SIMP(statut='c',typ=ma   ,validators=NoRepeat(),max='**'),
                                           GROUP_MA_ESCL   =SIMP(statut='f',typ=grma ,max=1),
-                                          MAILLE_ESCL     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
+                                          MAILLE_ESCL     =SIMP(statut='c',typ=ma   ,validators=NoRepeat(),max='**'),
 #
                                           NORMALE         =SIMP(statut='f',typ='TXM',defaut="MAIT", into=("MAIT","MAIT_ESCL","ESCL"),),
 #
@@ -331,9 +331,9 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT", op=30, sd_prod   = char_contact, r
                                           DIST_APPA       =SIMP(statut='f',typ='R'  ,defaut=-1.0),
                                           TOLE_PROJ_EXT   =SIMP(statut='f',typ='R'  ,defaut=0.50),
 # --- Incompatibilité avec CL
-                                          SANS_NOEUD      =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
+                                          SANS_NOEUD      =SIMP(statut='c',typ=no   ,validators=NoRepeat(),max='**'),
                                           SANS_GROUP_NO   =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
-                                          SANS_MAILLE     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
+                                          SANS_MAILLE     =SIMP(statut='c',typ=ma   ,validators=NoRepeat(),max='**'),
                                           SANS_GROUP_MA   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
 # --- Mode sans calcul
                                           RESOLUTION      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
@@ -387,9 +387,9 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT", op=30, sd_prod   = char_contact, r
                                                           regles=(UN_PARMI('GROUP_MA_ESCL','MAILLE_ESCL'),
                                                           UN_PARMI('GROUP_MA_MAIT','MAILLE_MAIT'),),
                                                           GROUP_MA_MAIT   =SIMP(statut='f',typ=grma ,max=1),
-                                                          MAILLE_MAIT     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
+                                                          MAILLE_MAIT     =SIMP(statut='c',typ=ma   ,validators=NoRepeat(),max='**'),
                                                           GROUP_MA_ESCL   =SIMP(statut='f',typ=grma ,max=1),
-                                                          MAILLE_ESCL     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
+                                                          MAILLE_ESCL     =SIMP(statut='c',typ=ma   ,validators=NoRepeat(),max='**'),
 # -------------------- Choice of normals --------------------------------------------------------------------------------------------------
                                                           NORMALE         =SIMP(statut='f',typ='TXM',defaut="MAIT",
                                                                                 into=("MAIT","MAIT_ESCL","ESCL"),),
@@ -426,9 +426,9 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT", op=30, sd_prod   = char_contact, r
                                                           DIST_MAIT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                                           DIST_ESCL       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
 # -------------------- Managing boundary conditions with contact --------------------------------------------------------------------------
-                                                          SANS_NOEUD      =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
+                                                          SANS_NOEUD      =SIMP(statut='c',typ=no   ,validators=NoRepeat(),max='**'),
                                                           SANS_GROUP_NO   =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
-                                                          SANS_MAILLE     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
+                                                          SANS_MAILLE     =SIMP(statut='c',typ=ma   ,validators=NoRepeat(),max='**'),
                                                           SANS_GROUP_MA   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
 # -------------------- Specific collocation integration rules -----------------------------------------------------------------------------
                                                           INTEGRATION     =SIMP(statut='f',typ='TXM',defaut="AUTO",
@@ -472,7 +472,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT", op=30, sd_prod   = char_contact, r
                                           COULOMB    = SIMP(statut='o',typ='R',),
                                           SEUIL_INIT = SIMP(statut='f',typ='R'),
                                           regles=(EXCLUS('SANS_NOEUD_FR','SANS_GROUP_NO_FR'),),
-                                          SANS_NOEUD_FR    =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+                                          SANS_NOEUD_FR    =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
                                           SANS_GROUP_NO_FR =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
                                           b_sans_group_no_frot=BLOC(condition = """exists("SANS_GROUP_NO_FR") or exists("SANS_NOEUD_FR")""",
                                                             fr=tr("Direction de frottement à exclure (uniquement dans le cas 3D)"),
@@ -513,9 +513,9 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT", op=30, sd_prod   = char_contact, r
                                                           regles=(UN_PARMI('GROUP_MA_ESCL','MAILLE_ESCL'),
                                                           UN_PARMI('GROUP_MA_MAIT','MAILLE_MAIT'),),
                                                           GROUP_MA_MAIT   =SIMP(statut='f',typ=grma ,max=1),
-                                                          MAILLE_MAIT     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
+                                                          MAILLE_MAIT     =SIMP(statut='c',typ=ma   ,validators=NoRepeat(),max='**'),
                                                           GROUP_MA_ESCL   =SIMP(statut='f',typ=grma ,max=1),
-                                                          MAILLE_ESCL     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
+                                                          MAILLE_ESCL     =SIMP(statut='c',typ=ma   ,validators=NoRepeat(),max='**'),
 # -------------------- Choice of normals --------------------------------------------------------------------------------------------------
                                                           NORMALE         =SIMP(statut='f',typ='TXM',defaut="MAIT", into=("MAIT","MAIT_ESCL","ESCL"),),
                                                           VECT_MAIT       =SIMP(statut='f',typ='TXM',defaut="AUTO", into=("AUTO","FIXE","VECT_Y")),
@@ -548,9 +548,9 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT", op=30, sd_prod   = char_contact, r
                                                           DIST_MAIT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                                           DIST_ESCL       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
 # -------------------- Managing boundary conditions with contact --------------------------------------------------------------------------
-                                                          SANS_NOEUD      =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
+                                                          SANS_NOEUD      =SIMP(statut='c',typ=no   ,validators=NoRepeat(),max='**'),
                                                           SANS_GROUP_NO   =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
-                                                          SANS_MAILLE     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
+                                                          SANS_MAILLE     =SIMP(statut='c',typ=ma   ,validators=NoRepeat(),max='**'),
                                                           SANS_GROUP_MA   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
 # -------------------- Specific collocation integration rules -----------------------------------------------------------------------------
                                                           INTEGRATION     =SIMP(statut='f',typ='TXM',defaut="AUTO", into=("AUTO","GAUSS","SIMPSON","NCOTES",),),

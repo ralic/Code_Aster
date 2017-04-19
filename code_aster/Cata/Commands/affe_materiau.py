@@ -34,7 +34,7 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
            regles=(UN_PARMI('TOUT','GROUP_MA','MAILLE'),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-           MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+           MAILLE          =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
            MATER           =SIMP(statut='o',typ=mater_sdaster,max=30),
          ),
 
@@ -44,7 +44,7 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
            regles=(UN_PARMI('TOUT','GROUP_MA','MAILLE'),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-           MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+           MAILLE          =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
            COMPOR          =SIMP(statut='o',typ=compor_sdaster,max=1),
          ),
 
@@ -63,7 +63,7 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
 
           TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ), # [défaut]
           GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-          MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+          MAILLE          =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
 
           NOM_VARC        =SIMP(statut='o',typ='TXM', into=("TEMP","GEOM","CORR","IRRA","HYDR","SECH","EPSA",
                                "M_ACIER","M_ZIRC","NEUT1","NEUT2","PTOT","DIVU",)),

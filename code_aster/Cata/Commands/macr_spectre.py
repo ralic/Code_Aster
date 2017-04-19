@@ -35,7 +35,7 @@ MACR_SPECTRE=MACRO(nom="MACR_SPECTRE",
                NOM           =SIMP(statut='o',typ='TXM',),
                regles=(AU_MOINS_UN('GROUP_NO','NOEUD'),),
                GROUP_NO      =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-               NOEUD         =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+               NOEUD         =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
             ),
          ), # fin b_maillage
          b_not_maillage=BLOC( condition = """not exists("MAILLAGE")""",

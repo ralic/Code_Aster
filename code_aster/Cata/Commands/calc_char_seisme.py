@@ -34,7 +34,7 @@ CALC_CHAR_SEISME=OPER(nom="CALC_CHAR_SEISME",op=  92,sd_prod=calc_char_seisme_pr
          MODE_STAT       =SIMP(statut='f',typ=(mode_meca,) ),
          b_mode_stat     =BLOC ( condition = """exists("MODE_STAT")""",
            regles=(UN_PARMI('NOEUD','GROUP_NO' ),),
-           NOEUD           =SIMP(statut='f',typ=no,validators=NoRepeat(),max='**'),
+           NOEUD           =SIMP(statut='c',typ=no,validators=NoRepeat(),max='**'),
            GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
          ),
          TITRE           =SIMP(statut='f',typ='TXM'),

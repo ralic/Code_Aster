@@ -41,7 +41,7 @@ PROJ_SPEC_BASE=OPER(nom="PROJ_SPEC_BASE",op= 146,sd_prod=interspectre,reentrant=
          OPTION         =SIMP(statut='f',typ='TXM',defaut="TOUT",into=("TOUT","DIAG")),
          TOUT           =SIMP(statut='f',typ='TXM',into=("OUI",), ),
          GROUP_MA       =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-         MAILLE         =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**'),
+         MAILLE         =SIMP(statut='c',typ=ma,validators=NoRepeat(),max='**'),
 #  Quel est le type attendu derriere  MODELE_INTERFACE
          MODELE_INTERFACE=SIMP(statut='f',typ=modele_sdaster),
          VECT_X         =SIMP(statut='f',typ='R',min=3,max=3 ),

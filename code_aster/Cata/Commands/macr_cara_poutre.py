@@ -69,7 +69,7 @@ MACR_CARA_POUTRE=MACRO(nom="MACR_CARA_POUTRE",
             condition = """exists("GROUP_MA_BORD")""",
             fr=tr(" calcul des carac. mecaniques"),
             regles=(UN_PARMI('NOEUD','GROUP_NO')),
-            NOEUD          =SIMP(statut='f',typ=no,max='**',
+            NOEUD          =SIMP(statut='c',typ=no,max='**',
                                  fr=tr("Simplement pour empecher des pivots nuls le cas echeant. "
                                       "Fournir un noeud quelconque")),
             GROUP_NO       =SIMP(statut='f',typ=grno,max='**',

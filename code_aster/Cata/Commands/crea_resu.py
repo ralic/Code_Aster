@@ -162,7 +162,7 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
                 VITE            =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                 MULT_APPUI      =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
                 DIRECTION       =SIMP(statut='f',typ='R',max='**'),
-                NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+                NOEUD           =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
                 GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),),
          ), # fin bloc b_evol_noli
    
@@ -226,7 +226,7 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
              NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',into=C_NOM_CHAM_INTO('ELGA'),),
              MODELE_INIT     =SIMP(statut='o',typ=modele_sdaster),
              TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-             MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+             MAILLE          =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
              GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
              RESU_INIT       =SIMP(statut='o',typ=resultat_sdaster),
              MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster),
@@ -311,7 +311,7 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
              CARA_ELEM     =SIMP(statut='o',typ=cara_elem),         # CARA_ELEM pour connaitre EPAIS et COQU_NCOU
 
              TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-             MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+             MAILLE          =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
              GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
 
            ),

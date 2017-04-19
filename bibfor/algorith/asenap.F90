@@ -1,5 +1,6 @@
 subroutine asenap(masse)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -22,12 +23,13 @@ subroutine asenap(masse)
 #include "asterfort/jexnum.h"
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
+#include "asterfort/utreno.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: masse
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,7 +56,7 @@ subroutine asenap(masse)
 !     ------------------------------------------------------------------
 ! IN  : MASSE  : MATRICE DE MASSE DE LA STRUCTURE
 !     ------------------------------------------------------------------
-    integer :: ibid, icas, ier, ino, iocc, ire1, iref, jcas, jdir
+    integer :: ibid, icas, ier, ino, iocc, ire1, jcas, jdir
     integer :: jdref, jno, jnoeu, jnref, jref, jsta, jtyp, nbmc, nbno, nbocc, nc
     integer :: ncas, nocas, ns, nt, nucas, nx, ny, nz
     real(kind=8) :: dx, dy, dz, epsima
@@ -64,6 +66,7 @@ subroutine asenap(masse)
     character(len=15) :: motfac
     character(len=16) :: concep, nomcmd, mesnoe
     character(len=24) :: obj2, valk(2), noref
+    aster_logical :: l_norefe
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -186,8 +189,10 @@ subroutine asenap(masse)
         zr(jdref+icas-1) = 0.0d0
         zr(jdref+icas+1-1) = 0.0d0
         zr(jdref+icas+2-1) = 0.0d0
-        call getvtx(motfac, 'NOEUD_REFE', iocc=icas, scal=noref, nbret=iref)
-        if (iref .ne. 0) then
+        
+        l_norefe = .false.
+        call utreno(motfac, 'REFE', icas, noma, noref, ok_noeud=l_norefe)
+        if (l_norefe) then
             call jenonu(jexnom(obj2, noref), ire1)
             if (ire1 .eq. 0) then
                 ier = ier + 1

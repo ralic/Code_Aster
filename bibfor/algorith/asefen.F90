@@ -21,6 +21,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/utmess.h"
+#include "asterfort/utreno.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
@@ -32,7 +33,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
     aster_logical :: muapde
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -65,8 +66,8 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
 ! IN  : NINTRA : NOMBRE d'INTRA-GROUPE
 ! IN  : NBDIS  : APPARTENANCE DES SUPPORTS AUX INTRAGROUPES
 !     ------------------------------------------------------------------
-    integer :: ibid, idi, ier, igr, in, ino, inorf, ioc, iordr, ire1, ire2, iret
-    integer :: is, jdgn, jvale, nbtrou, ncas, ng, ngr, nn, nno, nnr
+    integer :: ibid, idi, ier, igr, in, ino, ioc, iordr, ire1, ire2, iret
+    integer :: is, jdgn, jvale, nbtrou, ncas, ng, ngr, nn, nno
     integer :: nx, ny, nz, ns
     integer :: tordr(1)
     real(kind=8) :: dx, dy, dz, r8b, xx1, xxx
@@ -79,6 +80,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
     character(len=24), pointer :: group_no(:) => null()
     character(len=8), pointer :: noeud(:) => null()
     real(kind=8), pointer :: repmo(:) => null()
+    aster_logical :: l_norefe
 !     ------------------------------------------------------------------
     data  nomcmp / 'DX' , 'DY' , 'DZ' /
 !     ------------------------------------------------------------------
@@ -89,15 +91,17 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
     call dismoi('NOM_MAILLA', masse, 'MATR_ASSE', repk=noma)
     obj1 = noma//'.GROUPENO'
     obj2 = noma//'.NOMNOE'
-    inorf =0
+    
 !
     motfac ='DEPL_MULT_APPUI'
     call getvtx('DEPL_MULT_APPUI', 'NOM_CAS', iocc=1, nbval=0, nbret=ns)
     if (ns .ne. 0) then
         call getfac(motfac, ncas)
         do ioc = 1, ncas
-            call getvtx(motfac, 'NOEUD_REFE', iocc=ioc, scal=noeref, nbret=nnr)
-            if (nnr .ne. 0) inorf = 1
+
+            l_norefe = .false.
+            call utreno(motfac, 'REFE', ioc, noma, noeref, ok_noeud=l_norefe)
+            
             call getvtx(motfac, 'NOEUD', iocc=ioc, nbval=0, nbret=nn)
             if (nn .ne. 0) then
                 nno = -nn
@@ -185,7 +189,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
 !
             endif
 !
-            if (inorf .ne. 0) then
+            if (l_norefe) then
                 call jenonu(jexnom(obj2, noeref), ire1)
                 call jeexin(jexnom(obj1, noeref), ire2)
                 if ((ire1+ire2) .eq. 0) then

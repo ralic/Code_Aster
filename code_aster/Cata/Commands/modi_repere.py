@@ -82,8 +82,8 @@ MODI_REPERE=OPER(nom="MODI_REPERE",op=191,sd_prod=modi_repere_prod,reentrant='f'
                 AXE_Z           =SIMP(statut='f',typ='R',min=3,max=3,),
                 GROUP_MA    =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',),
                 GROUP_NO    =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**',),
-                MAILLE      =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**',),
-                NOEUD       =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**',),
+                MAILLE      =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**',),
+                NOEUD       =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**',),
             ),),
 
         b_uti       =BLOC(condition = """equal_to("REPERE", 'UTILISATEUR')""",
@@ -94,8 +94,8 @@ MODI_REPERE=OPER(nom="MODI_REPERE",op=191,sd_prod=modi_repere_prod,reentrant='f'
                 VECT_Y          =SIMP(statut='f',typ='R',min=3,max=3,),
                 GROUP_MA    =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',),
                 GROUP_NO    =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**',),
-                MAILLE      =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**',),
-                NOEUD       =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**',),
+                MAILLE      =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**',),
+                NOEUD       =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**',),
             ),),  
                       
         b_coq      =BLOC(condition = """equal_to("REPERE", 'COQUE')""",
@@ -104,16 +104,16 @@ MODI_REPERE=OPER(nom="MODI_REPERE",op=191,sd_prod=modi_repere_prod,reentrant='f'
                 VECTEUR         =SIMP(statut='f',typ='R',min=3,max=3,),
                 GROUP_MA    =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',),
                 GROUP_NO    =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**',),
-                MAILLE      =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**',),
-                NOEUD       =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**',),
+                MAILLE      =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**',),
+                NOEUD       =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**',),
             ),),
             
         b_autre    =BLOC(condition = """is_in("REPERE", ('GLOBAL_UTIL', 'COQUE_INTR_UTIL', 'COQUE_UTIL_INTR'))""",
             AFFE     =FACT(statut='o',max='**',
                 GROUP_MA    =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',),
                 GROUP_NO    =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**',),
-                MAILLE      =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**',),
-                NOEUD       =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**',),
+                MAILLE      =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**',),
+                NOEUD       =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**',),
            ),),            
 #
 #   Traitement de CHAM_GD and not reuse

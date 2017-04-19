@@ -51,7 +51,7 @@ MACR_ECLA_PG=MACRO(nom="MACR_ECLA_PG",
 
              # Sélection éventuelle d'un sous-ensemble des éléments à visualiser :
              TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-             MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+             MAILLE          =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
              GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
 
              # Sélection des numéros d'ordre :

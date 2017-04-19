@@ -91,7 +91,7 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
              regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
                TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
                GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-               MAILLE          =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**'),
+               MAILLE          =SIMP(statut='c',typ=ma,validators=NoRepeat(),max='**'),
                         ),
 
          ETAT_INIT       =FACT(statut='f',

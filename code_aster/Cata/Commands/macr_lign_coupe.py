@@ -72,7 +72,7 @@ MACR_LIGN_COUPE=MACRO(nom="MACR_LIGN_COUPE",
          VIS_A_VIS       =FACT(statut='f',max='**',
                              regles=(EXCLUS('GROUP_MA_1','MAILLE_1'),),
            GROUP_MA_1        =SIMP(statut='f',typ=grma),
-           MAILLE_1          =SIMP(statut='f',typ=ma,max='**'),),
+           MAILLE_1          =SIMP(statut='c',typ=ma,max='**'),),
 
          LIGN_COUPE     =FACT(statut='o',max='**',
             regles=(EXCLUS("NOM_CMP","INVARIANT","ELEM_PRINCIPAUX","RESULTANTE"),
@@ -113,9 +113,9 @@ MACR_LIGN_COUPE=MACRO(nom="MACR_LIGN_COUPE",
              MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster),
              # si le groupe de mailles forme une ligne ouverte, on peut choisir le sens de parcours en choissant l'origine:
              # si le groupe de mailles forme une ligne fermée, il FAUT choisir l'origine et l'extrémité (= origine):
-             NOEUD_ORIG      =SIMP(statut='f',typ=no),
+             NOEUD_ORIG      =SIMP(statut='c',typ=no),
              GROUP_NO_ORIG   =SIMP(statut='f',typ=grno),
-             NOEUD_EXTR      =SIMP(statut='f',typ=no),
+             NOEUD_EXTR      =SIMP(statut='c',typ=no),
              GROUP_NO_EXTR   =SIMP(statut='f',typ=grno),
              # si le groupe de mailles forme une ligne fermée, on peut choisir le sens de parcours
              VECT_ORIE       =SIMP(statut='f',typ='R',max=3),  # utilisé seulement si NOEUD_ORIG=NOEUD_EXTR

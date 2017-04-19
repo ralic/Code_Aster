@@ -34,6 +34,7 @@ from math import pi
 
 import numpy as NP
 from numpy.fft import ifft, fft
+from Utilitai.partition import MAIL_PY
 
 import aster
 from code_aster.Cata.Syntax import _F
@@ -1159,7 +1160,30 @@ class PostMissChar(PostMiss):
 
         self.MODELE = self.param['MODELE']
         self.fonc_depl  =  self.param['FONC_SIGNAL']
-        self.List_Noeu_Fictif = self.param['NOEUD_AFFE']
+        if self.param['NOEUD_AFFE']:
+            self.List_Noeu_Fictif = self.param['NOEUD_AFFE']
+        elif self.param['GROUP_NO_AFFE']:
+            # Récuperation des concepts de la base
+            macro = CONTEXT.get_current_step()
+            # récuperation du maillage
+            nom_MODELE = self.MODELE.get_name()
+            iret, ibid, nomsd = aster.dismoi('NOM_MAILLA', nom_MODELE, 'MODELE', 'F')
+            nomsd = nomsd.strip()
+            mail = macro.get_concept(nomsd)
+            mm = MAIL_PY()
+            mm.FromAster(mail)
+            # groupes de noeuds
+            collgrno = mm.gno
+            list_nuno_affe = []
+            for gr in self.param['GROUP_NO_AFFE']:
+                list_nuno_affe.extend(collgrno[gr])
+            self.List_Noeu_Fictif = []
+            linomno  = list(mm.correspondance_noeuds)
+            for nuno in list_nuno_affe:
+                self.List_Noeu_Fictif.append(linomno[nuno].strip())
+        else:
+            self.List_Noeu_Fictif = []
+        
         self.nbno = len(self.List_Noeu_Fictif)
         self.ncols = 6*self.nbno
         self.dt = self.param['PAS_INST']

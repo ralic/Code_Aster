@@ -75,7 +75,7 @@ POST_CHAMP=OPER(nom="POST_CHAMP",op=155,sd_prod=post_champ_prod, reentrant='n',
 #====
          TOUT       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          GROUP_MA   =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-         MAILLE     =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**'),
+         MAILLE     =SIMP(statut='c',typ=ma,validators=NoRepeat(),max='**'),
 
 
 

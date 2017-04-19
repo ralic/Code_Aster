@@ -837,6 +837,11 @@ MAILB=ASSE_MAILLAGE(MAILLAGE_1=MAILLAGE,
                     OPERATION='SOUS_STR',);
 #
 
+MAILB=DEFI_GROUP(reuse=MAILB,
+              MAILLAGE=MAILB,
+              CREA_GROUP_NO=(_F(NOM = 'GRNOAFF', 
+                                NOEUD=('N257',)),),);
+
 
 MODELB=AFFE_MODELE(MAILLAGE=MAILB,
                      AFFE_SOUS_STRUC=_F(SUPER_MAILLE=('STAT1',),
@@ -948,7 +953,8 @@ FSEISX=CALC_MISS(MODELE=MODELB, TYPE_RESU='CHARGE',
                         NOM_CMP='DX',
                         FREQ_MAX=10.,
                         UNITE_RESU_FORC=29,
-                        NOEUD_AFFE=('N257',),
+                        #NOEUD_AFFE=('N257',),
+                        GROUP_NO_AFFE='GRNOAFF',
                         VARI='OUI',
                         PRECISION  =  0.9 ,
                         MATR_GENE=_F(BASE=BAMO, NUME_DDL_GENE=NDDLGEN),
