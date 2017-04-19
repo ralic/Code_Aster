@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,8 +23,8 @@ TOTO=DEFI_GROUP(reuse =TOTO,
                 CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
 
 MAT1=DEFI_MATERIAU(NON_LOCAL=_F(LONG_CARA=3.0**0.5,),
-                   ECRO_LINE=_F(D_SIGM_EPSI=-2000.0,
-                                SY=3.0,),
+                   BETON_ECRO_LINE=_F(D_SIGM_EPSI=-2000.0,
+                                SYT=3.0,),
                    ELAS=_F(NU=0.1,
                            E=10000,),);
 
@@ -74,7 +74,7 @@ EVOL1=STAT_NON_LINE(CHAM_MATER=CHMAT,
                     CONVERGENCE=_F(ITER_GLOB_MAXI=10,
                                    ITER_GLOB_ELAS=25,
                                    RESI_GLOB_RELA=1.E-06,),
-                    COMPORTEMENT=_F(RELATION='ENDO_FRAGILE',),
+                    COMPORTEMENT=_F(RELATION='ENDO_ISOT_BETON',),
                     INCREMENT=_F(LIST_INST=DEFLIST,
                                  INST_FIN=0.,),
                     NEWTON=_F(PREDICTION='TANGENTE',
@@ -94,7 +94,7 @@ EVOL1=STAT_NON_LINE(reuse=EVOL1,
                               TYPE_CHARGE='FIXE_PILO',),
                            _F(CHARGE=CL1,),
                            _F(CHARGE=CL2,),),
-                    COMPORTEMENT=_F(RELATION='ENDO_FRAGILE',),
+                    COMPORTEMENT=_F(RELATION='ENDO_ISOT_BETON',),
                     ETAT_INIT=_F(EVOL_NOLI=EVOL1,),
                     INCREMENT=_F(LIST_INST=DEFLIST,),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=11,
@@ -110,6 +110,7 @@ EVOL1=STAT_NON_LINE(reuse=EVOL1,
                                  SELECTION='RESIDU',
                                  GROUP_MA = ('GMA10',),
                                  ETA_PILO_R_MIN=0.,
+                                 ETA_PILO_R_MAX=10.,
                                  ETA_PILO_MIN=0.4,),
                        );
 
@@ -118,13 +119,13 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=33,
                    NOM_CHAM='DEPL',
                    NOEUD='N2',
                    NOM_CMP='DY',
-                   VALE_CALC=9.5435891815836E-3,),
+                   VALE_CALC=0.00706301318553,),
                 _F(NUME_ORDRE=33,
                    POINT=2,
                    RESULTAT=EVOL1,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V1',
-                   VALE_CALC=0.99765935915405,
+                   VALE_CALC=0.957163763092,
                    MAILLE='M31',),
                 ),
           )

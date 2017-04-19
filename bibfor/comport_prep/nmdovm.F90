@@ -17,7 +17,7 @@ implicit none
 #include "asterfort/teattr.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -70,11 +70,11 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: notype, type_elem, comp_rela_elem
+    character(len=16) :: notype, type_elem, comp_rela_elem, type_elem2
     character(len=8) :: mesh
     integer :: nutyel, nb_cmp_maxi
     integer :: j_cesd, j_cesl
-    integer :: iret, irett, ielem
+    integer :: iret, irett, ielem, iret2
     integer :: iad
     integer :: j_elem_affe
     integer :: nb_elem_mesh, nb_elem
@@ -159,6 +159,7 @@ implicit none
 ! --------- Type of modelization
 !
             call teattr('C', 'TYPMOD', type_elem, iret, typel=notype)
+            call teattr('C', 'TYPMOD2', type_elem2, iret2, typel=notype)
             if (iret .eq. 0) then
                 if (type_elem(1:6) .eq. 'C_PLAN') then
                     call lctest(rela_comp_py, 'MODELISATION', 'C_PLAN', irett)
@@ -174,6 +175,11 @@ implicit none
                     call lctest(rela_comp_py, 'MODELISATION', '3D', irett)
                     if (irett .eq. 0) then
                         l_comp_erre = .true.
+                    else
+                        call lctest(rela_comp_py, 'MODELISATION', type_elem2, irett)
+                        if (irett .eq. 0) then
+                            l_comp_erre = .true.
+                        endif
                     endif
                 else
                     call lctest(rela_comp_py, 'MODELISATION', type_elem, irett)

@@ -109,7 +109,6 @@ implicit none
 #include "asterfort/lc2038.h"
 #include "asterfort/lc3053.h"
 #include "asterfort/lc4047.h"
-#include "asterfort/lc5005.h"
 #include "asterfort/lc5006.h"
 #include "asterfort/lc5007.h"
 #include "asterfort/lc5008.h"
@@ -928,13 +927,6 @@ implicit none
 ! - With GRADEPSI
 ! --------------------------------------------------------------------------------------------------
 !
-    case (5005)
-!     ENDO_FRAGILE
-        call lc5005(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, typmod, icomp,&
-                    nvi, wkout, dsidep, codret)
     case (5006)
 !     ENDO_ISOT_BETON
         call lc5006(fami, kpg, ksp, ndim, imate,&
