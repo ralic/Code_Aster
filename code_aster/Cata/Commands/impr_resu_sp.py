@@ -27,7 +27,7 @@ from code_aster.Cata.Commons import *
 IMPR_RESU_SP=MACRO(nom="IMPR_RESU_SP",
     op=OPS('Macro.impr_resu_sp_ops.impr_resu_sp_ops'),
     reentrant='n',
-    fr=tr("Sortie des champs à sous-points pour visu avec Salomé_Méca"),
+    fr=tr("Sortie des champs à sous-points pour visu avec Salome-Meca"),
 
     regles=(EXCLUS('INST','LIST_INST','NUME_ORDRE'),),
 

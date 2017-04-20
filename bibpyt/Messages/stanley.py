@@ -90,15 +90,15 @@ Impossible de contacter le serveur SALOME! Vérifier qu'il est bien lancé.
     15 : _(u"""
 Impossible de récupérer le nom de la machine locale!
 Solution alternative : utiliser le mode DISTANT en indiquant l'adresse IP
-ou le nom de la machine dans la case 'machine de Salomé'.
+ou le nom de la machine dans la case 'machine de SALOME'.
 """),
 
     16 : _(u"""
-Pour visualisation dans Salomé, la variable %(k1)s est obligatoire. On abandonne.
+Pour visualisation dans SALOME, la variable %(k1)s est obligatoire. On abandonne.
 """),
 
     17 : _(u"""
-Pour visualisation dans Salomé, la variable machine_SALOME_port est obligatoire.
+Pour visualisation dans SALOME, la variable machine_SALOME_port est obligatoire.
 On abandonne.
 """),
 
@@ -107,11 +107,11 @@ Erreur : mode WINDOWS non implémenté
 """),
 
     19 : _(u"""
-Erreur: il est possible que STANLEY ne puisse pas contacter Salomé :
+Erreur: il est possible que STANLEY ne puisse pas contacter SALOME :
 
- - machine Salomé définie : %(k1)s
- - port de Salomé         : %(k2)s
- - lanceur Salomé         : %(k3)s
+ - machine SALOME définie : %(k1)s
+ - port de SALOME         : %(k2)s
+ - lanceur SALOME         : %(k3)s
 
 Vous pouvez modifier ces valeurs dans les paramètres dans STANLEY.
 

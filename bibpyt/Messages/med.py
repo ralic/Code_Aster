@@ -79,7 +79,7 @@ cata_msg = {
      Si le maillage a été produit par un code externe, vérifier que les
      noms de maillage, de groupes, de familles ne contiennent pas de
      blancs à la fin.
-     Dans Salomé, on peut renommer ces entités et supprimer les espaces
+     Dans SALOME, on peut renommer ces entités et supprimer les espaces
      invalides.
 """),
 
@@ -190,7 +190,7 @@ cata_msg = {
 """),
 
     38 : _(u"""
-  -> Incohérence catalogue - fortran 
+  -> Incohérence catalogue - fortran
 Ce message est un message d'erreur développeur.
 Contactez le support technique.
 """),
