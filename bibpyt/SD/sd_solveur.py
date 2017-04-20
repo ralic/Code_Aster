@@ -42,7 +42,7 @@ class sd_solveur(AsBase):
             assert slvk[8] in (
                 'IN_CORE', 'OUT_OF_CORE', 'AUTO', 'EVAL', 'XXXX')
             assert slvk[10] in ('SANS', 'AUTO', 'FORCE', 'XXXX', 'MINI')
-            assert slvk[11] in ('XXXX', '5.0.2consortium', '5.0.2', '5.1.0consortium', '5.1.0')
+            assert slvk[11] in ('XXXX', '5.0.2consortium', '5.0.2', '5.1.1consortium', '5.1.1')
         elif method == 'MULT_FRONT':
             assert slvk[1] in ('XXXX')
             assert slvk[2] in ('XXXX')

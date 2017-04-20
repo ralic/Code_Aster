@@ -228,7 +228,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
             case default
                 ASSERT(.false.)
             end select
-        else if (kvers(1:6).eq.'5.1.0 ') then
+        else if (kvers(1:6).eq.'5.1.1 ') then
             select case(kacmum)
             case('FR','LR')
                 !ok
@@ -243,7 +243,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
             case default
                 ASSERT(.false.)
             end select
-        else if (kvers(1:15).eq.'5.1.0consortium') then
+        else if (kvers(1:15).eq.'5.1.1consortium') then
             select case(kacmum)
             case('FR','FR+','LR','LR+')
                 !ok
