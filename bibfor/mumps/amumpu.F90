@@ -564,7 +564,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
         select case (kvers)
         case('5.0.2','5.0.2consortium','5.1.1','5.1.1consortium')
         case default
-!            call utmess('F', 'FACTOR_72', sk=kvers)
+            call utmess('F', 'FACTOR_72', sk=kvers)
         end select
 !
 !       ------------------------------------------------

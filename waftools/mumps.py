@@ -105,9 +105,9 @@ int main(void){
         ret = self.check_cc(fragment=fragment, use='MUMPS',
                             mandatory=True, execute=True, define_ret=True)
         self.env['MUMPS_VERSION'] = ret
-#        if dict_vers.get(ret, ret) != '5.0.2' and dict_vers.get(ret, ret) != '5.0.2consortium' and dict_vers.get(ret, ret) != '5.1.0' and dict_vers.get(ret, ret) != '5.1.0consortium':
-#            raise Errors.ConfigurationError("expected versions: {0}".
-#                                             format('5.0.2/5.1.0(consortium)'))
+        if dict_vers.get(ret, ret) != '5.0.2' and dict_vers.get(ret, ret) != '5.0.2consortium' and dict_vers.get(ret, ret) != '5.1.1' and dict_vers.get(ret, ret) != '5.1.1consortium':
+            raise Errors.ConfigurationError("expected versions: {0}".
+                                             format('5.0.2/5.1.1(consortium)'))
     except:
         self.end_msg('no', 'YELLOW')
         raise
