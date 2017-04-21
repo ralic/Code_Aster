@@ -173,8 +173,7 @@ Conseils :
   - Augmenter la valeur du mot clé  SOLVEUR/PCENT_PIVOT. On a le droit de dépasser la valeur 100
     (surtout sur les petits systèmes),
   - Passer en mode de gestion mémoire automatique (GESTION_MEMOIRE='AUTO'),
-  - En dernier ressort, passer en mode OUT_OF_CORE (GESTION_MEMOIRE='OUT_OF_CORE') ou augmenter la mémoire
-    dévolue au calcul ou le nombre de processeurs (si le calcul est parallèle).
+  - En dernier ressort, augmenter la mémoire dévolue au calcul ou le nombre de processeurs (si le calcul est parallèle).
 """),
 
     54: _(u"""
