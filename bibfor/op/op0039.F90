@@ -43,7 +43,6 @@ subroutine op0039()
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mdexma.h"
-#include "asterfort/rscrmo.h"
 #include "asterfort/ulexis.h"
 #include "asterfort/ulisog.h"
 #include "asterfort/ulopen.h"
