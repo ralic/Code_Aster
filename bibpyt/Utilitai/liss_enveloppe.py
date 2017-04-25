@@ -18,9 +18,39 @@
 
 import math,copy
 import numpy as N
-from scipy import interpolate 
+# from scipy import interpolate 
 from Utilitai.Utmess import UTMESS
   
+def interpole(x2, x0, y0, x1, y1):
+    """
+        renvoie la valeur pour x2 interpolée (lineairement) entre x0 et x1
+    """
+    try:
+        a = (y1 - y0) / (x1 - x0)
+    except ZeroDivisionError:
+        return y0
+
+    return a * (x2 - x0) + y0
+    
+def interpolate(listx,listy,listxnew):
+    listynew=[]
+    id = 0
+    for x2 in listxnew:
+        upid = True
+        while upid:
+            if (listx[id]<=x2 and id==len(listx)-1):
+                y2 = interpole(x2, listx[id], listy[id], listx[id-1], listy[id-1])
+                listynew.append(y2)
+                upid = False
+            elif (listx[id]<=x2 and listx[id+1]>x2) :
+                y2 = interpole(x2, listx[id], listy[id], listx[id+1], listy[id+1])
+                listynew.append(y2)
+                upid = False
+            else:
+                id+=1
+    # assert(len(listynew)==len(listxnew))    
+    return listynew        
+    
 class filtre:
 
     """
@@ -635,8 +665,7 @@ def enveloppe_nappe(l_nappe):
         l_freq = N.array(l_freq) 
         s_max = N.zeros(len(l_freq))
         for spec in l_spec:
-            fd = interpolate.interp1d(spec.listFreq, spec.dataVal)
-            ynew = fd(l_freq)
+            ynew = interpolate(spec.listFreq, spec.dataVal,l_freq)
             s_max = [ max(s_max[t], ynew[t]) for t in range(len(l_freq))]
         spec= spectre(listFreq=l_freq,dataVal=s_max)
         spec.filtre(filterLinLin)
@@ -666,8 +695,7 @@ def enveloppe_spectres(listSpec):
     l_freq = N.array(l_freq) 
     s_max = N.zeros(len(l_freq))
     for spec in l_spec:
-        fd = interpolate.interp1d(spec.listFreq, spec.dataVal)
-        ynew = fd(l_freq)
+        ynew = interpolate(spec.listFreq, spec.dataVal,l_freq)
         s_max = [ max(s_max[t], ynew[t]) for t in range(len(l_freq))]
     spec= spectre(listFreq=l_freq,dataVal=s_max)
     spec.filtre(filterLinLin)
