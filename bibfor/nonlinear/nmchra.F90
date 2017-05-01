@@ -1,7 +1,7 @@
-subroutine nmchra(sddyna, optamo, lcamor)
+subroutine nmchra(sddyna, l_renumber, optamo, lcamor)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,6 +26,7 @@ subroutine nmchra(sddyna, optamo, lcamor)
 #include "asterfort/jemarq.h"
 #include "asterfort/ndynlo.h"
     character(len=19) :: sddyna
+    aster_logical :: l_renumber
     character(len=16) :: optamo
     aster_logical :: lcamor
 !
@@ -38,8 +39,8 @@ subroutine nmchra(sddyna, optamo, lcamor)
 ! ----------------------------------------------------------------------
 !
 !
-! IN  SDDISC : SD DISC_INST
 ! IN  SDDYNA : SD DYNAMIQUE
+! In  l_renumber       : .true. if renumber
 ! OUT OPTAMO : OPTION POUR L'AMORTISSEMENT
 ! OUT LCAMOR : .TRUE. SI CALCUL MATRICE D'AMORTISSEMENT
 !
@@ -70,9 +71,9 @@ subroutine nmchra(sddyna, optamo, lcamor)
 !
     lktan = ndynlo(sddyna,'RAYLEIGH_KTAN')
 !
-! --- REACTUALISATION DE LA MATRICE D AMORTISSEMENT DE RAYLEIGH
+! --- REACTUALISATION DE LA MATRICE D'AMORTISSEMENT DE RAYLEIGH
 !
-    if (lktan) then
+    if (l_renumber .or. lktan) then
         lcamor = .true.
     endif
 !

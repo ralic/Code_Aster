@@ -29,7 +29,7 @@ implicit none
 #include "asterfort/mtdscr.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -148,6 +148,11 @@ implicit none
     iterat = 0
     lcamor = .false.
 !
+! --- RE-CREATION DU NUME_DDL OU PAS
+!
+    call nmrenu(modelz, fonact, lischa, ds_contact, numedd,&
+                renume)
+!
 ! --- CHOIX DE REASSEMBLAGE DE LA MATRICE GLOBALE
 !
     call nmchrm('PREDICTION', ds_algopara, fonact, sddisc, sddyna,&
@@ -157,13 +162,8 @@ implicit none
 ! --- CHOIX DE REASSEMBLAGE DE L'AMORTISSEMENT
 !
     if (lamor) then
-        call nmchra(sddyna, optamo, lcamor)
+        call nmchra(sddyna, renume, optamo, lcamor)
     endif
-!
-! --- RE-CREATION DU NUME_DDL OU PAS
-!
-    call nmrenu(modelz, fonact, lischa, ds_contact, numedd,&
-                renume)
 !
 ! --- OPTION DE CALCUL POUR MERIMO
 !

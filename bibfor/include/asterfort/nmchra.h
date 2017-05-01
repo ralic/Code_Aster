@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,8 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmchra(sddyna, optamo, lcamor)
+    subroutine nmchra(sddyna, l_renumber, optamo, lcamor)
         character(len=19) :: sddyna
+        aster_logical :: l_renumber
         character(len=16) :: optamo
         aster_logical :: lcamor
     end subroutine nmchra
