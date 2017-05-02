@@ -1,4 +1,4 @@
-subroutine regegc(nomres, resgen, mailsk, profno)    
+subroutine regegc(nomres, resgen, mailsk, profno)
     implicit none
 #include "jeveux.h"
 #include "asterfort/dcapno.h"
@@ -35,7 +35,7 @@ subroutine regegc(nomres, resgen, mailsk, profno)
     character(len=19) :: profno
 !-----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -202,7 +202,6 @@ subroutine regegc(nomres, resgen, mailsk, profno)
 !
     call rscrsd('G', nomres, 'MODE_MECA', nbmod(1))
 !
-!
 !-- ON TESTE SI ON A EU RECOURS A L'ELIMINATION
 !
     seliai=nume_gene(1:14)//'.ELIM.BASE'
@@ -266,16 +265,15 @@ subroutine regegc(nomres, resgen, mailsk, profno)
         call vtcrea(chamne, crefe, 'G', 'C', neq)
         call jeveuo(chamne//'.VALE', 'E', vc=vale)
 !
-        
-        call rsadpa(resgen, 'L', 7, nompar, iord,&
+        call rsadpa(resgen, 'L', 8, nompar, iord,&
                     0, tjv=iadpar, styp=kbid)
         freq = zr(iadpar(1))
         genek = zr(iadpar(2))
         genem = zr(iadpar(3))
         genec = zr(iadpar(4))
-        amor = zr(iadpar(7))
         omeg2 = zr(iadpar(5))
         numo = zi(iadpar(6))
+        amor = zr(iadpar(7))
         efmasx = 0.d0
         efmasy = 0.d0
         efmasz = 0.d0
@@ -354,9 +352,10 @@ subroutine regegc(nomres, resgen, mailsk, profno)
                     compy = mael_iner_vale(1+nbbas+j-1)
                     compz = mael_iner_vale(1+2*nbbas+j-1)
 !             --- UTILISATION DE MAT TRANSPOSEE (TRANSFORMATION INVERSE)
-                    efmasx = efmasx + zr(iad)*(compx*mat(1,1) + compy* mat(2,1) + compz*mat(3,1))
-                    efmasy = efmasy + zr(iad)*(compx*mat(1,2) + compy* mat(2,2) + compz*mat(3,2))
-                    efmasz = efmasz + zr(iad)*(compx*mat(1,3) + compy* mat(2,3) + compz*mat(3,3))
+!TODO
+!~                     efmasx = efmasx + zc(iad)*(compx*mat(1,1) + compy* mat(2,1) + compz*mat(3,1))
+!~                     efmasy = efmasy + zc(iad)*(compx*mat(1,2) + compy* mat(2,2) + compz*mat(3,2))
+!~                     efmasz = efmasz + zc(iad)*(compx*mat(1,3) + compy* mat(2,3) + compz*mat(3,3))
 !
 !  BOUCLE SUR LES DDL DE LA BASE
 !
@@ -380,6 +379,7 @@ subroutine regegc(nomres, resgen, mailsk, profno)
             endif
         end do
 !
+!TODO
         !fpartx = efmasx/genem
         !fparty = efmasy/genem
         !fpartz = efmasz/genem
@@ -388,7 +388,7 @@ subroutine regegc(nomres, resgen, mailsk, profno)
         !efmasz = efmasz*efmasz/genem
         call rsnoch(nomres, depl, i)
         call rsadpa(nomres, 'E', 8, nompar, i,&
-                    0, tjv=iadpar, styp=kbid)                  
+                    0, tjv=iadpar, styp=kbid)
         zr(iadpar(1)) = freq
         zr(iadpar(2)) = genek
         zr(iadpar(3)) = genem
@@ -397,7 +397,8 @@ subroutine regegc(nomres, resgen, mailsk, profno)
         zi(iadpar(6)) = numo
         zr(iadpar(7)) = amor
         zk16(iadpar(8)) = 'MODE_DYN'
-        
+
+!TODO
         !zr(iadpar(8)) = efmasx
         !zr(iadpar(9)) = efmasy
         !zr(iadpar(10)) = efmasz
@@ -415,7 +416,7 @@ subroutine regegc(nomres, resgen, mailsk, profno)
         call rotchc(profno, vale, roty, nbsst, skeleton,&
                     nbnot, nbcmp, 2)
         call rotchc(profno, vale, rotz, nbsst, skeleton,&
-                    nbnot, nbcmp, 3)                  
+                    nbnot, nbcmp, 3)
 
 
     end do

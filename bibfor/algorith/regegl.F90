@@ -35,7 +35,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
     character(len=19) :: profno
 !-----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -65,6 +65,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !--   NE PAS OUBLIER DE REPORTER LE CHANGEMENT DANS L'AUTRE.
 !
 !  /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
+!
 !-----------------------------------------------------------------------
 !
 ! NOMRES  /I/ : NOM K8 DU CONCEPT MODE_MECA RESULTAT
@@ -208,7 +209,6 @@ subroutine regegl(nomres, resgen, mailsk, profno)
     sst=   nume_gene(1:14)//'.ELIM.NOMS'
 !
     call jeexin(seliai, elim)
-!
     if (elim .ne. 0) then
         neqet=0
         nomsst=model_gene//'      .MODG.SSNO'
@@ -227,9 +227,9 @@ subroutine regegl(nomres, resgen, mailsk, profno)
         end do
     endif
 !
-!C
-!CC---RESTITUTION PROPREMENT DITE---------------------------------------
-!C
+!
+!---RESTITUTION PROPREMENT DITE---------------------------------------
+!
 !
     call jeveuo(prof_gene//'.NUEQ', 'L', vi=nueq)
     call jenonu(jexnom(prof_gene//'.LILI', '&SOUSSTR'), i_ligr_ss)
